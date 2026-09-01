@@ -1,0 +1,16 @@
+{
+  "name": "lab-02-litert-web-vision",
+  "version": "1.0.0",
+  "description": "Lab 2: LiteRT en Web con JavaScript para Vision por Computador",
+  "scripts": {
+    "start": "npx serve . -p 3000",
+    "serve": "npx serve . -p 3000"
+  },
+  "dependencies": {
+    "@litertjs/core": "^2.5.3",
+    "@litertjs/tfjs-interop": "^2.5.3"
+  },
+  "devDependencies": {
+    "serve": "^14.2.4"
+  }
+}

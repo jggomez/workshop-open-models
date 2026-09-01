@@ -1,0 +1,16 @@
+{
+  "name": "workshop-open-source-models",
+  "version": "1.0.0",
+  "description": "Workshop de Modelos Open Source",
+  "scripts": {
+    "setup:lab2": "python3 session-01-hf-kerashub-litert/02-litert-web-vision/models/download_model.py",
+    "serve:lab2": "npx serve -l 3000 session-01-hf-kerashub-litert/02-litert-web-vision",
+    "serve:lab3": "npx serve -l 3001 session-01-hf-kerashub-litert/03-litert-lm-cli-and-web",
+    "lab2": "npx serve -l 3000 session-01-hf-kerashub-litert/02-litert-web-vision",
+    "lab3": "npx serve -l 3001 session-01-hf-kerashub-litert/03-litert-lm-cli-and-web",
+    "lab2:py": "python3 -m http.server 3000 --directory session-01-hf-kerashub-litert/02-litert-web-vision",
+    "lab3:py": "python3 -m http.server 3001 --directory session-01-hf-kerashub-litert/03-litert-lm-cli-and-web",
+    "clean": "./cleanup.sh",
+    "clean:all": "./cleanup.sh --all"
+  }
+}

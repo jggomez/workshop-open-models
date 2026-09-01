@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Workshop Modelos Open Source - Navegador de Laboratorios</title>
+  <style>
+    :root {
+      --bg-primary: #0f172a;
+      --bg-card: #1e293b;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --accent: #38bdf8;
+      --accent-hover: #0ea5e9;
+      --border: #334155;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-main);
+      margin: 0;
+      padding: 2rem 1rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      box-sizing: border-box;
+    }
+    .container {
+      max-width: 800px;
+      width: 100%;
+    }
+    h1 {
+      font-size: 1.8rem;
+      color: var(--accent);
+      margin-bottom: 0.5rem;
+      text-align: center;
+    }
+    p.subtitle {
+      color: var(--text-muted);
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    .lab-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+    .lab-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.25rem;
+      text-decoration: none;
+      color: inherit;
+      transition: all 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    .lab-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+    .lab-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--accent);
+    }
+    .lab-desc {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      line-height: 1.4;
+    }
+    .lab-tech {
+      font-size: 0.75rem;
+      color: #64748b;
+      font-family: monospace;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Workshop: Modelos Open Source en Produccion</h1>
+    <p class="subtitle">Seleccione el laboratorio interactivo que desea ejecutar:</p>
+
+    <div class="lab-grid">
+      <a href="session-01-hf-kerashub-litert/03-litert-lm-cli-and-web/" class="lab-card">
+        <div class="lab-title">Lab 3: LiteRT-LM Web API (Chat con SLMs/LLMs)</div>
+        <div class="lab-desc">Inferencia de lenguaje on-device acelerada por WebGPU basada en la especificacion oficial de Google AI Edge (developers.google.com/edge/litert-lm/js).</div>
+        <div class="lab-tech">Tecnologias: JavaScript, LiteRT-LM Web API, WebGPU, Streaming</div>
+      </a>
+
+      <a href="session-01-hf-kerashub-litert/02-litert-web-vision/" class="lab-card">
+        <div class="lab-title">Lab 2: LiteRT.js Web Vision (Clasificacion en Navegador)</div>
+        <div class="lab-desc">Ejecucion de modelos de vision .tflite directamente en el navegador con WebAssembly y @litertjs/core.</div>
+        <div class="lab-tech">Tecnologias: JavaScript, @litertjs/core, WebAssembly SIMD, FlatBuffers</div>
+      </a>
+
+      <a href="session-01-hf-kerashub-litert/01-kerashub-image-classification/README.md" class="lab-card">
+        <div class="lab-title">Lab 1: KerasHub Image Classification</div>
+        <div class="lab-desc">Clasificacion de imagenes con KerasHub y Keras 3 multi-backend (PyTorch, JAX, TensorFlow).</div>
+        <div class="lab-tech">Tecnologias: Python, KerasHub, ImageNet</div>
+      </a>
+
+      <a href="session-01-hf-kerashub-litert/04-huggingface-translation/README.md" class="lab-card">
+        <div class="lab-title">Lab 4: Hugging Face Translation & Multimodal VLM</div>
+        <div class="lab-desc">Traduccion Sequence-to-Sequence con pipeline() e inferencia multimodal con AutoModelForMultimodalLM.</div>
+        <div class="lab-tech">Tecnologias: Python, Transformers, MarianMT, SmolVLM</div>
+      </a>
+
+      <a href="session-01-hf-kerashub-litert/05-huggingface-gemma-datasets/README.md" class="lab-card">
+        <div class="lab-title">Lab 5: Hugging Face Datasets & Gemma Multimodal</div>
+        <div class="lab-desc">Descarga de datasets de instrucciones del Hub y evaluacion con Gemma Multimodal (device_map="auto").</div>
+        <div class="lab-tech">Tecnologias: Python, Datasets, AutoModelForMultimodalLM, Gemma</div>
+      </a>
+    </div>
+  </div>
+</body>
+</html>

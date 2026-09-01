@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LiteRT-LM Web API - Google AI Edge (Oficial)</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="chat-layout">
+    <!-- Sidebar Controls -->
+    <aside class="sidebar">
+      <div class="brand">
+        <h1>LiteRT-LM Web API</h1>
+        <p>Google AI Edge On-Device Runtime</p>
+        <a href="https://developers.google.com/edge/litert-lm/js" target="_blank" class="ref-link">docs: developers.google.com/edge/litert-lm/js</a>
+      </div>
+
+      <div class="status-box">
+        <span id="statusIndicator" class="status-indicator"></span>
+        <span id="engineStatus">Iniciando LiteRT-LM Engine...</span>
+      </div>
+
+      <div class="control-group">
+        <label for="modelSelect">Modelo On-Device:</label>
+        <select id="modelSelect" class="chat-select">
+          <option value="onnx-community/Qwen2.5-0.5B-Instruct" selected>Qwen 2.5 0.5B Instruct (WebGPU / ~250MB)</option>
+          <option value="HuggingFaceTB/SmolLM2-135M-Instruct">SmolLM2 135M Instruct (Ultra-rápido / ~80MB)</option>
+          <option value="onnx-community/gemma-2-2b-it">Google Gemma 2 2B IT (WebGPU / ~1.4GB)</option>
+        </select>
+      </div>
+
+      <div class="control-group">
+        <label for="sliderTemp">Temperatura: <span id="valTemp">0.7</span></label>
+        <input type="range" id="sliderTemp" min="0.0" max="1.5" step="0.1" value="0.7">
+      </div>
+
+      <div class="control-group">
+        <label for="sliderTokens">Max Tokens: <span id="valTokens">256</span></label>
+        <input type="range" id="sliderTokens" min="32" max="1024" step="32" value="256">
+      </div>
+
+      <div class="control-group">
+        <label for="sliderTopK">Top-K: <span id="valTopK">40</span></label>
+        <input type="range" id="sliderTopK" min="1" max="100" step="1" value="40">
+      </div>
+
+      <div class="stats-card">
+        <div class="stat-row">
+          <span class="stat-label">Hardware:</span>
+          <span id="statHw" class="stat-val">Detectando WebGPU...</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">Latencia Primer Token:</span>
+          <span id="statTtft" class="stat-val">--</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">Velocidad Generacion:</span>
+          <span id="statTps" class="stat-val">--</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">Tokens Totales:</span>
+          <span id="statTokens" class="stat-val">0</span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Chat Container -->
+    <main class="chat-container">
+      <div id="chatMessages" class="chat-messages">
+        <div class="message bot">
+          Bienvenido al cliente oficial de <strong>Google AI Edge LiteRT-LM Web API</strong> (<a href="https://developers.google.com/edge/litert-lm/js" target="_blank" style="color: inherit; text-decoration: underline;">developers.google.com/edge/litert-lm/js</a>).<br><br>
+          Esta aplicacion ejecuta modelos generativos de lenguaje <em>on-device</em> directamente en su navegador mediante WebGPU y streaming asincrono en tiempo real.
+        </div>
+      </div>
+
+      <form id="chatForm" class="chat-input-area">
+        <input type="text" id="userInput" class="chat-input" placeholder="Escriba su consulta aqui..." autocomplete="off">
+        <button type="submit" id="btnSend" class="btn-send">Enviar</button>
+      </form>
+    </main>
+  </div>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>

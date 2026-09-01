@@ -1,0 +1,7 @@
+transformers>=4.40.0
+datasets>=2.18.0
+accelerate>=0.30.0
+torch>=2.2.0
+bitsandbytes>=0.43.0
+pillow>=10.0.0
+matplotlib>=3.7.0

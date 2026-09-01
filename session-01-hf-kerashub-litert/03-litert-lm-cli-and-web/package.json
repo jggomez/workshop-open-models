@@ -1,0 +1,15 @@
+{
+  "name": "lab-03-litert-lm-web",
+  "version": "1.0.0",
+  "description": "Lab 3: Inferencia Web de LLMs On-Device con LiteRT-LM",
+  "scripts": {
+    "start": "npx serve . -p 3001",
+    "serve": "npx serve . -p 3001"
+  },
+  "devDependencies": {
+    "serve": "^14.2.4"
+  },
+  "dependencies": {
+    "@litert-lm/core": "^0.16.0"
+  }
+}

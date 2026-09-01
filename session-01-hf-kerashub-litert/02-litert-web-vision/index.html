@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LiteRT.js Vision - Official Google AI Edge Web Runtime</title>
+  <link rel="stylesheet" href="styles.css">
+  <!-- Native Browser Import Map for LiteRT.js and dependencies -->
+  <script type="importmap">
+  {
+    "imports": {
+      "@litertjs/core": "https://cdn.jsdelivr.net/npm/@litertjs/core@2.5.3/dist/index.js",
+      "@litertjs/wasm-utils": "https://cdn.jsdelivr.net/npm/@litertjs/wasm-utils@2.5.3/dist/index.js"
+    }
+  }
+  </script>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>LiteRT.js Web Vision</h1>
+      <p class="subtitle">Inferencia On-Device en el Navegador con la Biblioteca Oficial @litertjs/core de Google AI Edge</p>
+    </header>
+
+    <div class="grid">
+      <!-- Input Panel -->
+      <div class="card">
+        <h2>Entrada de Imagen</h2>
+        <div id="statusBadge" class="status-badge status-loading">Inicializando runtime LiteRT.js...</div>
+
+        <div class="sample-buttons">
+          <button class="btn btn-secondary" onclick="loadSampleImage('dog')">Ejemplo Perro</button>
+          <button class="btn btn-secondary" onclick="loadSampleImage('cat')">Ejemplo Gato</button>
+          <button class="btn btn-secondary" onclick="loadSampleImage('car')">Ejemplo Auto</button>
+          <button class="btn btn-secondary" onclick="loadSampleImage('grace_hopper')">Grace Hopper</button>
+        </div>
+
+        <div class="upload-area" onclick="document.getElementById('fileInput').click()">
+          <p>Haga clic o arrastre cualquier imagen aqui</p>
+          <input type="file" id="fileInput" accept="image/*" style="display: none">
+        </div>
+
+        <div class="preview-container">
+          <img id="imagePreview" alt="Vista previa" crossorigin="anonymous">
+        </div>
+
+        <div style="margin-top: 1rem;">
+          <button id="btnClassify" class="btn" style="width: 100%;" disabled onclick="classifyCurrentImage()">
+            Ejecutar Inferencia LiteRT.js On-Device
+          </button>
+        </div>
+      </div>
+
+      <!-- Results Panel -->
+      <div class="card">
+        <h2>Resultados de Inferencia</h2>
+
+        <div class="metrics-panel">
+          <div>
+            <span class="metrics-label">Motor:</span>
+            <span id="metricBackend" class="metrics-value">LiteRT.js WASM</span>
+          </div>
+          <div>
+            <span class="metrics-label">Latencia:</span>
+            <span id="metricLatency" class="metrics-value">-- ms</span>
+          </div>
+          <div>
+            <span class="metrics-label">Modelo:</span>
+            <span id="metricStatus" class="metrics-value">efficientnet_lite0.tflite</span>
+          </div>
+        </div>
+
+        <div id="resultsContainer" class="results-list">
+          <p style="color: var(--text-secondary); text-align: center; margin-top: 2rem;">
+            Cargue cualquier imagen y presione 'Ejecutar Inferencia LiteRT.js On-Device' para evaluar el modelo .tflite.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>
