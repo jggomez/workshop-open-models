@@ -51,14 +51,11 @@ jupyter lab session-01-hf-kerashub-litert/04-huggingface-translation/01_huggingf
 
 ---
 
-## 4. Paso Final: Limpieza del Entorno (Cleanup)
+## 4. Paso Final: Limpieza del Entorno
 
 ```bash
-# Limpiar caches de Hugging Face
+# Limpiar caches del modelo en disco
 rm -rf ~/.cache/huggingface/hub/models--Helsinki-NLP--opus-mt-es-en
-
-# O ejecutar el script de limpieza general
-./cleanup.sh --cache
 ```
 
 ---

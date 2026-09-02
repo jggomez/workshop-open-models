@@ -76,12 +76,12 @@ for await (const chunk of stream) {
 
 ## 5. Guia de Ejecucion
 
-### Opcion 1: Mediante Script de Ejecucion Directa (Recomendado)
+### Opcion 1: Con NPM (Recomendado)
 Desde la raiz del repositorio:
 ```bash
-./run_lab3.sh
+npm run lab3
 ```
-*(Este script inicia el servidor web en el puerto 3001 y abre automaticamente la ventana del navegador).*
+Luego abra en su navegador: **[http://localhost:3001](http://localhost:3001)**.
 
 ### Opcion 2: Con Servidor HTTP de Python
 ```bash
@@ -89,23 +89,15 @@ python3 -m http.server 3001 --directory session-01-hf-kerashub-litert/03-litert-
 ```
 Luego abra en su navegador: **[http://localhost:3001](http://localhost:3001)**.
 
-### Opcion 3: Con NPM
-```bash
-npm run lab3
-```
-
 ---
 
-## 6. Paso Final: Limpieza del Entorno (Cleanup)
+## 6. Paso Final: Limpieza del Entorno
 
-Para eliminar archivos temporales y dependencias:
+Para eliminar archivos temporales y dependencias locales:
 
 ```bash
-# Limpiar dependencias o caches
+# Limpiar dependencias locales si se instalaron con npm
 rm -rf session-01-hf-kerashub-litert/03-litert-lm-cli-and-web/node_modules
-
-# O ejecutar el script de limpieza general
-./cleanup.sh
 ```
 
 ---

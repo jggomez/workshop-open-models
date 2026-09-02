@@ -162,11 +162,11 @@ for r, idx in enumerate(top5, 1):
 ### Parte B: Inferencia en el Navegador con LiteRT.js (@litertjs/core)
 
 #### Paso 1: Iniciar el servidor local
-Con el script directo (Recomendado):
+Con npm desde la raiz del repositorio:
 ```bash
-./run_lab2.sh
+npm run lab2
 ```
-O con Python:
+O con el servidor HTTP de Python:
 ```bash
 python3 -m http.server 3000 --directory session-01-hf-kerashub-litert/02-litert-web-vision
 ```
@@ -180,7 +180,7 @@ python3 -m http.server 3000 --directory session-01-hf-kerashub-litert/02-litert-
 
 ---
 
-## 5. Paso Final: Limpieza del Entorno (Cleanup)
+## 5. Paso Final: Limpieza del Entorno
 
 Para eliminar el modelo descargado y los archivos generados:
 
@@ -188,9 +188,6 @@ Para eliminar el modelo descargado y los archivos generados:
 # Eliminar binarios locales de modelos
 rm -f session-01-hf-kerashub-litert/02-litert-web-vision/models/efficientnet_lite0.tflite
 rm -f session-01-hf-kerashub-litert/02-litert-web-vision/models/imagenet_classes.json
-
-# O ejecutar el script de limpieza general
-./cleanup.sh
 ```
 
 ---

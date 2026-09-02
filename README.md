@@ -37,22 +37,27 @@ El taller se divide en cuatro sesiones tematicas:
 
 ---
 
-## Ejecucion Rapida de Laboratorios Web (1 Clic)
+## Ejecucion de los Laboratorios Web
 
-El repositorio incluye scripts ejecutables directos que inician el servidor y abren automaticamente el navegador:
+Para interactuar con los laboratorios web on-device (Lab 2 y Lab 3), puede iniciar el portal interactivo del workshop:
 
 ```bash
-# Ejecutar Laboratorio 3 (Chat Web On-Device con LiteRT-LM Web API / WebGPU)
-./run_lab3.sh
-
-# Ejecutar Laboratorio 2 (Clasificacion de Vision en Navegador con LiteRT.js)
-./run_lab2.sh
-```
-
-Tambien puede abrir el portal interactivo de navegacion ejecutando:
-```bash
+# Iniciar portal interactivo (puerto 3000)
 python3 -m http.server 3000
 # y abrir en el navegador: http://localhost:3000
+```
+
+O ejecutar cada laboratorio directamente con npm o Python:
+```bash
+# Laboratorio 3 (Chat Web On-Device con LiteRT-LM Web API / WebGPU en http://localhost:3001)
+npm run lab3
+# o con Python:
+npm run lab3:py
+
+# Laboratorio 2 (Clasificacion de Vision en Navegador con LiteRT.js en http://localhost:3000)
+npm run lab2
+# o con Python:
+npm run lab2:py
 ```
 
 ---
@@ -67,23 +72,6 @@ python3 -m http.server 3000
 
 ### 2. Ejecucion de los Cuadernos
 Todos los cuadernos interactivos (`.ipynb`) incluyen en su primera celda los comandos de instalacion correspondientes (`!pip install ...`), por lo que estan completamente listos para ejecutarse con un solo clic en Google Colab o en su entorno local con Jupyter Lab / VS Code.
-
----
-
-## Limpieza del Entorno (Cleanup)
-
-Para restablecer el entorno de trabajo y no dejar archivos temporales, imagenes descargadas ni modelos pesados en el disco local:
-
-```bash
-# Limpieza rapida (archivos temporales, imagenes y binarios descargados)
-./cleanup.sh
-
-# Limpieza completa (incluyendo eliminacion del entorno virtual .venv)
-./cleanup.sh --venv
-
-# Limpieza total (incluyendo caches globales de Hugging Face y Keras)
-./cleanup.sh --all
-```
 
 ---
 

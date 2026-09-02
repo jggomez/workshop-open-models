@@ -53,15 +53,12 @@ jupyter lab session-01-hf-kerashub-litert/05-huggingface-gemma-datasets/01_huggi
 
 ---
 
-## 4. Paso Final: Limpieza del Entorno (Cleanup)
+## 4. Paso Final: Limpieza del Entorno
 
 ```bash
-# Limpiar caches del laboratorio
+# Limpiar caches de datasets y modelos en disco
 rm -rf ~/.cache/huggingface/datasets
 rm -rf ~/.cache/huggingface/hub
-
-# O ejecutar el script de limpieza general
-./cleanup.sh --cache
 ```
 
 ---

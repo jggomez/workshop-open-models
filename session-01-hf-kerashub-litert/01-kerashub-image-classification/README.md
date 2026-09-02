@@ -61,12 +61,9 @@ jupyter lab session-01-hf-kerashub-litert/01-kerashub-image-classification/
 
 ---
 
-## 4. Paso Final: Limpieza del Entorno (Cleanup)
+## 4. Liberacion de Recursos y Memoria
 
-```bash
-# Limpiar caches y archivos temporales
-./cleanup.sh
-```
+Cada cuaderno incluye en sus celdas finales la liberacion explicita de tensores y modelos (`del model`, `del gemma_lm`, `gc.collect()`) para mantener limpia la memoria de la GPU y del sistema sin dejar artefactos pesados en ejecucion.
 
 ---
 
