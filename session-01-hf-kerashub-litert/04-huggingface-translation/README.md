@@ -11,13 +11,13 @@ Este laboratorio interactivo ensena a implementar y ejecutar modelos de lenguaje
 ```text
 04-huggingface-translation/
 ├── README.md                 # Esta guia tecnica y explicativa
-├── notebook.ipynb            # Cuaderno interactivo optimizado para Google Colab y Jupyter
+├── 01_huggingface_translation_and_vlm.ipynb            # Cuaderno interactivo optimizado para Google Colab y Jupyter
 └── requirements.txt          # Dependencias de Python para este laboratorio
 ```
 
 ---
 
-## 2. Contenido del Cuaderno (`notebook.ipynb`)
+## 2. Contenido del Cuaderno (`01_huggingface_translation_and_vlm.ipynb`)
 
 ### Parte A: Traduccion Automatica con `from transformers import pipeline`
 - Carga de tokenizador y modelo Sequence-to-Sequence (`Helsinki-NLP/opus-mt-es-en`).
@@ -39,7 +39,7 @@ Este laboratorio interactivo ensena a implementar y ejecutar modelos de lenguaje
 
 ### Opcion 1: En Google Colab (Recomendada)
 Haga clic en el siguiente enlace para abrir y ejecutar directamente en Colab con GPU gratuita:
-- [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/jggomez/workshop-open-source-models/blob/main/session-01-hf-kerashub-litert/04-huggingface-translation/notebook.ipynb)
+- [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/jggomez/workshop-open-source-models/blob/main/session-01-hf-kerashub-litert/04-huggingface-translation/01_huggingface_translation_and_vlm.ipynb)
 
 ### Opcion 2: En Entorno Local
 ```bash
@@ -50,7 +50,7 @@ source .venv/bin/activate
 pip install -r session-01-hf-kerashub-litert/04-huggingface-translation/requirements.txt
 
 # 3. Iniciar Jupyter Lab o VS Code Notebook
-jupyter lab session-01-hf-kerashub-litert/04-huggingface-translation/notebook.ipynb
+jupyter lab session-01-hf-kerashub-litert/04-huggingface-translation/01_huggingface_translation_and_vlm.ipynb
 ```
 
 ---

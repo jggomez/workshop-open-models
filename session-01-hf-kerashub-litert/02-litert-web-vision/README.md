@@ -100,7 +100,7 @@ outputTensor.delete();
 ├── app.js                       # Controlador de inferencia con LiteRT.js (@litertjs/core)
 ├── styles.css                   # Hoja de estilos de la aplicacion
 ├── package.json                 # Dependencias npm (@litertjs/core)
-├── notebook.ipynb               # Cuaderno de inspeccion de tensores con Python
+├── 01_litert_interpreter_inspection.ipynb # Cuaderno de inspeccion de tensores con Python
 └── models/                      # Binarios del modelo y metadatos
     ├── efficientnet_lite0.tflite # Modelo oficial Google AI Edge LiteRT (17.7 MB)
     ├── imagenet_classes.json    # Diccionario de 1,000 clases ImageNet

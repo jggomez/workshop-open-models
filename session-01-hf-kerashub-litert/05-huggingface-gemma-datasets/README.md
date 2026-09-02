@@ -9,13 +9,13 @@ Este laboratorio interactivo ensena a combinar la biblioteca **`datasets`** de H
 ```text
 05-huggingface-gemma-datasets/
 ├── README.md                 # Esta guia tecnica y explicativa
-├── notebook.ipynb            # Cuaderno interactivo optimizado para Google Colab y Jupyter
+├── 01_huggingface_datasets_gemma_multimodal.ipynb            # Cuaderno interactivo optimizado para Google Colab y Jupyter
 └── requirements.txt          # Dependencias de Python para este laboratorio
 ```
 
 ---
 
-## 2. Contenido del Cuaderno (`notebook.ipynb`)
+## 2. Contenido del Cuaderno (`01_huggingface_datasets_gemma_multimodal.ipynb`)
 
 ### Paso 1: Descarga de Datasets desde Hugging Face Hub (`datasets.load_dataset`)
 - Descarga automatica de conjuntos de datos de instrucciones directamente del repositorio central de Hugging Face.
@@ -41,7 +41,7 @@ Este laboratorio interactivo ensena a combinar la biblioteca **`datasets`** de H
 
 ### Opcion 1: En Google Colab (Recomendada con GPU T4 / A100)
 Haga clic en el siguiente enlace para abrir y ejecutar el cuaderno en Google Colab:
-- [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/jggomez/workshop-open-source-models/blob/main/session-01-hf-kerashub-litert/05-huggingface-gemma-datasets/notebook.ipynb)
+- [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/jggomez/workshop-open-source-models/blob/main/session-01-hf-kerashub-litert/05-huggingface-gemma-datasets/01_huggingface_datasets_gemma_multimodal.ipynb)
 
 ### Opcion 2: En Entorno Local
 ```bash
@@ -52,7 +52,7 @@ source .venv/bin/activate
 pip install -r session-01-hf-kerashub-litert/05-huggingface-gemma-datasets/requirements.txt
 
 # 3. Iniciar Jupyter Lab o VS Code Notebook
-jupyter lab session-01-hf-kerashub-litert/05-huggingface-gemma-datasets/notebook.ipynb
+jupyter lab session-01-hf-kerashub-litert/05-huggingface-gemma-datasets/01_huggingface_datasets_gemma_multimodal.ipynb
 ```
 
 ---

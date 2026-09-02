@@ -12,15 +12,18 @@ El taller se divide en cuatro sesiones tematicas:
    - Modulo 1.1: Ecosistema Hugging Face (datasets, modelos, spaces) y KerasHub para vision y NLP.
    - Modulo 1.2: Descarga y gestion de modelos con Hugging Face y uso de LLMs con LiteRT-LM.
    - Hands-on Labs:
-     * **Lab 1:** Cuadernos interactivos KerasHub (`Keras_Hub.ipynb`, `Gemma4.ipynb`, `notebook.ipynb`) en `01-kerashub-image-classification/`.
-     * **Lab 2:** Inferencia web con LiteRT.js (`@litertjs/core`) en el navegador (`02-litert-web-vision/`).
+     * **Lab 1:** Cuadernos interactivos KerasHub (`01_kerashub_getting_started.ipynb`, `02_gemma4_multimodal_ai.ipynb`, `03_imagenet_classification_basics.ipynb`) en `01-kerashub-image-classification/`.
+     * **Lab 2:** Inferencia web con LiteRT.js (`@litertjs/core`) en el navegador y cuaderno (`01_litert_interpreter_inspection.ipynb`) en `02-litert-web-vision/`.
      * **Lab 3:** Chat Web con la API oficial LiteRT-LM Web API y WebGPU (`03-litert-lm-cli-and-web/`).
-     * **Lab 4:** Cuaderno interactivo de traduccion e inferencia multimodal VLM (`04-huggingface-translation/`).
-     * **Lab 5:** Cuaderno interactivo de evaluacion de datasets de Hugging Face con Gemma Multimodal (`05-huggingface-gemma-datasets/`).
+     * **Lab 4:** Cuaderno interactivo de traduccion e inferencia multimodal VLM (`01_huggingface_translation_and_vlm.ipynb`) en `04-huggingface-translation/`.
+     * **Lab 5:** Cuaderno interactivo de evaluacion de datasets de Hugging Face con Gemma Multimodal (`01_huggingface_datasets_gemma_multimodal.ipynb`) en `05-huggingface-gemma-datasets/`.
 
 2. **Sesion 2: Transfer Learning con Keras y Hugging Face**
-   - Modulo 2.1: Estrategias de Transfer Learning: Personalizacion de cabezales (heads), congelamiento de capas (layer freezing) e integracion de modelos desde Hugging Face usando Keras.
-   - Hands-on Lab: Pipeline completo de adaptacion y entrenamiento supervisado sobre un caso real.
+   - Modulo 2.1: Estrategias de Transfer Learning: Feature Extraction con cabezales personalizados, congelamiento de capas (layer freezing) y prevencion de olvido catastrofico.
+   - Modulo 2.2: Fine-tuning progresivo en 2 etapas con tasas de aprendizaje discriminativas sobre arquitecturas convolucionales y Transformers.
+   - Hands-on Labs:
+     * **Lab 1 (Sencillo):** Transfer Learning en Vision por Computador con MobileNetV2 y clasificacion de flores (`01_transfer_learning_vision_basics.ipynb`) en `01-transfer-learning-vision-basics/`.
+     * **Lab 2 (Avanzado):** Transfer Learning en NLP con BERT (`bert_tiny_en_uncased`), protocolo en 2 fases, matriz de confusion y analisis de sentimientos (`02_transfer_learning_nlp_advanced.ipynb`) en `02-transfer-learning-nlp-advanced/`.
 
 3. **Sesion 3: Fine-Tuning de LLMs (Gemma) con el Ecosistema Hugging Face**
    - Modulo 3.1: Adaptacion parametrica eficiente (PEFT y LoRA).

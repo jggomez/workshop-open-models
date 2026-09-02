@@ -8,28 +8,28 @@ Este laboratorio practico ensena a utilizar **KerasHub** sobre **Keras 3** para 
 
 ```text
 01-kerashub-image-classification/
-├── README.md                 # Esta guia tecnica y explicativa
-├── Keras_Hub.ipynb           # Cuaderno oficial KerasHub (Vision, LLMs y Fine-Tuning)
-├── Gemma4.ipynb              # Cuaderno multimodal completo con Google Gemma 4
-├── notebook.ipynb            # Cuaderno interactivo complementario de clasificacion
-└── requirements.txt          # Dependencias de Python para ejecucion local
+├── README.md                              # Esta guia tecnica y explicativa
+├── 01_kerashub_getting_started.ipynb      # Cuaderno oficial KerasHub (Vision, LLMs y Fine-Tuning)
+├── 02_gemma4_multimodal_ai.ipynb          # Cuaderno multimodal completo con Google Gemma 4
+├── 03_imagenet_classification_basics.ipynb # Cuaderno interactivo complementario de clasificacion
+└── requirements.txt                       # Dependencias de Python para ejecucion local
 ```
 
 ---
 
 ## 2. Cuadernos Interactivos
 
-### Cuaderno A: `Keras_Hub.ipynb` (Getting Started con KerasHub)
+### Cuaderno 1: `01_kerashub_getting_started.ipynb` (Getting Started con KerasHub)
 - **Autor:** Juan Guillermo Gomez
-- **Badge Colab:** [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/jggomez/workshop-open-models/blob/main/session-01-hf-kerashub-litert/01-kerashub-image-classification/Keras_Hub.ipynb)
+- **Badge Colab:** [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/jggomez/workshop-open-models/blob/main/session-01-hf-kerashub-litert/01-kerashub-image-classification/01_kerashub_getting_started.ipynb)
 - **Contenido y Secciones:**
   1. **Configuracion Multi-Backend:** Ejecucion acelerada con **JAX** (`KERAS_BACKEND="jax"`), compilacion XLA y gestion de memoria.
   2. **Vision por Computador:** Clasificacion de imagenes con el preset pre-entrenado `resnet_50_imagenet` sobre ImageNet-1k, deconstruccion en *Preprocessor* y *Backbone*, y decodificacion de etiquetas con `decode_imagenet_predictions`.
   3. **Generacion de Texto con LLMs:** Carga del modelo causal `gemma3_1b`, generacion individual y por lotes (*batched generation*), configuracion de muestreo estocastico (`TopKSampler(k=10, temperature=2.0)`), e inspeccion del tokenizador de subpalabras.
   4. **Transfer Learning de Extremo a Extremo:** Adaptacion de ResNet-50 para clasificacion binaria en el dataset Microsoft Cats vs Dogs, pipeline de aumentacion (`Rescaling`, `RandomFlip`, `RandomCrop`), entrenamiento con optimizador Adam, serializacion de preset local (`save_to_preset`) y publicacion al Model Hub de Kaggle (`upload_preset`).
 
-### Cuaderno B: `Gemma4.ipynb` (Inteligencia Artificial Multimodal con Gemma 4)
-- **Badge Colab:** [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/jggomez/workshop-open-models/blob/main/session-01-hf-kerashub-litert/01-kerashub-image-classification/Gemma4.ipynb)
+### Cuaderno 2: `02_gemma4_multimodal_ai.ipynb` (Inteligencia Artificial Multimodal con Gemma 4)
+- **Badge Colab:** [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/jggomez/workshop-open-models/blob/main/session-01-hf-kerashub-litert/01-kerashub-image-classification/02_gemma4_multimodal_ai.ipynb)
 - **Contenido y Secciones:**
   1. **Carga del Modelo Unificado:** Carga del preset `gemma4_instruct_2b` con precision `bfloat16`.
   2. **Generacion de Texto:** Dialogo conversacional estructurado con turnos `<|turn>user` y `<|turn>model`.
@@ -43,8 +43,8 @@ Este laboratorio practico ensena a utilizar **KerasHub** sobre **Keras 3** para 
   10. **OCR, Traduccion y Extraccion de Entidades:** Lectura de texto en senalizaciones y estructuracion de datos.
   11. **Planificacion de Viajes:** Reconocimiento de destinos a partir de fotografias y diseno de itinerarios.
 
-### Cuaderno C: `notebook.ipynb` (Clasificacion de Imagenes en ImageNet)
-- **Badge Colab:** [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/jggomez/workshop-open-models/blob/main/session-01-hf-kerashub-litert/01-kerashub-image-classification/notebook.ipynb)
+### Cuaderno 3: `03_imagenet_classification_basics.ipynb` (Clasificacion de Imagenes en ImageNet)
+- **Badge Colab:** [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/jggomez/workshop-open-models/blob/main/session-01-hf-kerashub-litert/01-kerashub-image-classification/03_imagenet_classification_basics.ipynb)
 - Cuaderno introductorio para clasificacion de imagenes con MobileNetV3 sobre ImageNet.
 
 ---
