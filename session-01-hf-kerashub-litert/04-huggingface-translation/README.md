@@ -10,9 +10,8 @@ Este laboratorio interactivo ensena a implementar y ejecutar modelos de lenguaje
 
 ```text
 04-huggingface-translation/
-├── README.md                 # Esta guia tecnica y explicativa
-├── 01_huggingface_translation_and_vlm.ipynb            # Cuaderno interactivo optimizado para Google Colab y Jupyter
-└── requirements.txt          # Dependencias de Python para este laboratorio
+├── README.md                                           # Esta guia tecnica y explicativa
+└── 01_huggingface_translation_and_vlm.ipynb            # Cuaderno interactivo optimizado para Google Colab y Jupyter
 ```
 
 ---
@@ -46,8 +45,8 @@ Haga clic en el siguiente enlace para abrir y ejecutar directamente en Colab con
 # 1. Activar entorno virtual
 source .venv/bin/activate
 
-# 2. Instalar dependencias
-pip install -r session-01-hf-kerashub-litert/04-huggingface-translation/requirements.txt
+# 2. Instalar dependencias consolidadas (desde la raiz)
+pip install -r requirements.txt
 
 # 3. Iniciar Jupyter Lab o VS Code Notebook
 jupyter lab session-01-hf-kerashub-litert/04-huggingface-translation/01_huggingface_translation_and_vlm.ipynb

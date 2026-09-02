@@ -8,9 +8,8 @@ Este laboratorio interactivo ensena a combinar la biblioteca **`datasets`** de H
 
 ```text
 05-huggingface-gemma-datasets/
-├── README.md                 # Esta guia tecnica y explicativa
-├── 01_huggingface_datasets_gemma_multimodal.ipynb            # Cuaderno interactivo optimizado para Google Colab y Jupyter
-└── requirements.txt          # Dependencias de Python para este laboratorio
+├── README.md                                                 # Esta guia tecnica y explicativa
+└── 01_huggingface_datasets_gemma_multimodal.ipynb            # Cuaderno interactivo optimizado para Google Colab y Jupyter
 ```
 
 ---
@@ -48,8 +47,8 @@ Haga clic en el siguiente enlace para abrir y ejecutar el cuaderno en Google Col
 # 1. Activar entorno virtual
 source .venv/bin/activate
 
-# 2. Instalar dependencias
-pip install -r session-01-hf-kerashub-litert/05-huggingface-gemma-datasets/requirements.txt
+# 2. Instalar dependencias consolidadas (desde la raiz)
+pip install -r requirements.txt
 
 # 3. Iniciar Jupyter Lab o VS Code Notebook
 jupyter lab session-01-hf-kerashub-litert/05-huggingface-gemma-datasets/01_huggingface_datasets_gemma_multimodal.ipynb

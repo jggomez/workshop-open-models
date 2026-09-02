@@ -34,12 +34,10 @@ session-02-transfer-learning/
 ├── README.md                                # Esta guia general de la sesion
 ├── 01-transfer-learning-vision-basics/      # Lab 1: Vision - Feature Extraction con MobileNetV2
 │   ├── README.md
-│   ├── 01_transfer_learning_vision_basics.ipynb
-│   └── requirements.txt
+│   └── 01_transfer_learning_vision_basics.ipynb
 └── 02-transfer-learning-nlp-advanced/       # Lab 2: NLP - Fine-Tuning Progresivo con BERT
     ├── README.md
-    ├── 02_transfer_learning_nlp_advanced.ipynb
-    └── requirements.txt
+    └── 02_transfer_learning_nlp_advanced.ipynb
 ```
 
 ---

@@ -1,5 +1,0 @@
-keras>=3.0.0
-numpy>=1.23.0
-matplotlib>=3.7.0
-pillow>=9.5.0
-requests>=2.31.0

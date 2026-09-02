@@ -22,8 +22,7 @@ En la estrategia de **Feature Extraction**:
 ```text
 01-transfer-learning-vision-basics/
 ├── README.md                                # Esta guia paso a paso
-├── 01_transfer_learning_vision_basics.ipynb  # Cuaderno interactivo listo para Google Colab y Jupyter
-└── requirements.txt                         # Dependencias de Python para ejecucion local
+└── 01_transfer_learning_vision_basics.ipynb  # Cuaderno interactivo listo para Google Colab y Jupyter
 ```
 
 ---
@@ -50,8 +49,8 @@ Haga clic en el siguiente enlace para abrir directamente el cuaderno en Google C
 
 ### Opcion 2: En Entorno Local
 ```bash
-# 1. Instalar dependencias
-pip install -r session-02-transfer-learning/01-transfer-learning-vision-basics/requirements.txt
+# 1. Instalar dependencias consolidadas (desde la raiz)
+pip install -r requirements.txt
 
 # 2. Iniciar Jupyter Lab
 jupyter lab session-02-transfer-learning/01-transfer-learning-vision-basics/01_transfer_learning_vision_basics.ipynb

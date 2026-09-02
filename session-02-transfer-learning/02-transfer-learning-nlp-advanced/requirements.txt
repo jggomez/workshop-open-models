@@ -1,5 +1,0 @@
-keras>=3.0.0
-keras-hub>=0.17.0
-scikit-learn>=1.3.0
-matplotlib>=3.7.0
-numpy>=1.23.0

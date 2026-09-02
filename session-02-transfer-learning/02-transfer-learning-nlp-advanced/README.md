@@ -26,8 +26,7 @@ En los modelos de lenguaje basados en Transformers, inicializar un nuevo cabezal
 ```text
 02-transfer-learning-nlp-advanced/
 ├── README.md                                # Esta guia paso a paso
-├── 02_transfer_learning_nlp_advanced.ipynb  # Cuaderno interactivo listo para Google Colab y Jupyter
-└── requirements.txt                         # Dependencias de Python para ejecucion local
+└── 02_transfer_learning_nlp_advanced.ipynb  # Cuaderno interactivo listo para Google Colab y Jupyter
 ```
 
 ---
@@ -55,8 +54,8 @@ Haga clic en el siguiente enlace para abrir directamente el cuaderno en Google C
 
 ### Opcion 2: En Entorno Local
 ```bash
-# 1. Instalar dependencias
-pip install -r session-02-transfer-learning/02-transfer-learning-nlp-advanced/requirements.txt
+# 1. Instalar dependencias consolidadas (desde la raiz)
+pip install -r requirements.txt
 
 # 2. Iniciar Jupyter Lab
 jupyter lab session-02-transfer-learning/02-transfer-learning-nlp-advanced/02_transfer_learning_nlp_advanced.ipynb

@@ -11,8 +11,7 @@ Este laboratorio practico ensena a utilizar **KerasHub** sobre **Keras 3** para 
 ├── README.md                              # Esta guia tecnica y explicativa
 ├── 01_kerashub_getting_started.ipynb      # Cuaderno oficial KerasHub (Vision, LLMs y Fine-Tuning)
 ├── 02_gemma4_multimodal_ai.ipynb          # Cuaderno multimodal completo con Google Gemma 4
-├── 03_imagenet_classification_basics.ipynb # Cuaderno interactivo complementario de clasificacion
-└── requirements.txt                       # Dependencias de Python para ejecucion local
+└── 03_imagenet_classification_basics.ipynb # Cuaderno interactivo complementario de clasificacion
 ```
 
 ---
@@ -56,8 +55,8 @@ Haga clic en cualquiera de los badges superiores para abrir directamente el cuad
 
 ### Opcion 2: En Entorno Local
 ```bash
-# 1. Instalar dependencias
-pip install -r session-01-hf-kerashub-litert/01-kerashub-image-classification/requirements.txt
+# 1. Instalar dependencias consolidadas del workshop (desde la raiz)
+pip install -r requirements.txt
 
 # 2. Iniciar Jupyter Lab
 jupyter lab session-01-hf-kerashub-litert/01-kerashub-image-classification/
