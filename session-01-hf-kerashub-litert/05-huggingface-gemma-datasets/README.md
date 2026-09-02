@@ -47,10 +47,7 @@ Haga clic en el siguiente enlace para abrir y ejecutar el cuaderno en Google Col
 # 1. Activar entorno virtual
 source .venv/bin/activate
 
-# 2. Instalar dependencias consolidadas (desde la raiz)
-pip install -r requirements.txt
-
-# 3. Iniciar Jupyter Lab o VS Code Notebook
+# 2. Iniciar Jupyter Lab o VS Code Notebook (las dependencias se auto-instalan en la primera celda del cuaderno)
 jupyter lab session-01-hf-kerashub-litert/05-huggingface-gemma-datasets/01_huggingface_datasets_gemma_multimodal.ipynb
 ```
 

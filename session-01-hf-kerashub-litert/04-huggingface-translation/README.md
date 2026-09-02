@@ -45,10 +45,7 @@ Haga clic en el siguiente enlace para abrir y ejecutar directamente en Colab con
 # 1. Activar entorno virtual
 source .venv/bin/activate
 
-# 2. Instalar dependencias consolidadas (desde la raiz)
-pip install -r requirements.txt
-
-# 3. Iniciar Jupyter Lab o VS Code Notebook
+# 2. Iniciar Jupyter Lab o VS Code Notebook (las dependencias se auto-instalan en la primera celda del cuaderno)
 jupyter lab session-01-hf-kerashub-litert/04-huggingface-translation/01_huggingface_translation_and_vlm.ipynb
 ```
 

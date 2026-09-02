@@ -55,10 +55,7 @@ Haga clic en cualquiera de los badges superiores para abrir directamente el cuad
 
 ### Opcion 2: En Entorno Local
 ```bash
-# 1. Instalar dependencias consolidadas del workshop (desde la raiz)
-pip install -r requirements.txt
-
-# 2. Iniciar Jupyter Lab
+# 1. Iniciar Jupyter Lab (las dependencias se auto-instalan en la primera celda del cuaderno)
 jupyter lab session-01-hf-kerashub-litert/01-kerashub-image-classification/
 ```
 

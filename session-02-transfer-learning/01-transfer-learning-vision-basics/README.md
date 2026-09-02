@@ -49,10 +49,7 @@ Haga clic en el siguiente enlace para abrir directamente el cuaderno en Google C
 
 ### Opcion 2: En Entorno Local
 ```bash
-# 1. Instalar dependencias consolidadas (desde la raiz)
-pip install -r requirements.txt
-
-# 2. Iniciar Jupyter Lab
+# Iniciar Jupyter Lab (las dependencias se auto-instalan en la primera celda del cuaderno)
 jupyter lab session-02-transfer-learning/01-transfer-learning-vision-basics/01_transfer_learning_vision_basics.ipynb
 ```
 

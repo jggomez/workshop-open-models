@@ -65,21 +65,8 @@ python3 -m http.server 3000
 - Git.
 - Navegador moderno con soporte WebGPU (Google Chrome, Microsoft Edge, Safari Tech Preview).
 
-### 2. Configuracion del Entorno Virtual de Python
-
-```bash
-# Clonar el repositorio
-git clone <URL_DEL_REPOSITORIO>
-cd workshop-open-source-models
-
-# Crear y activar el entorno virtual
-python3 -m venv .venv
-source .venv/bin/activate  # En Windows: .venv\Scripts\activate
-
-# Instalar dependencias requeridas
-pip install --upgrade pip
-pip install -r requirements.txt
-```
+### 2. Ejecucion de los Cuadernos
+Todos los cuadernos interactivos (`.ipynb`) incluyen en su primera celda los comandos de instalacion correspondientes (`!pip install ...`), por lo que estan completamente listos para ejecutarse con un solo clic en Google Colab o en su entorno local con Jupyter Lab / VS Code.
 
 ---
 
