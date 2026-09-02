@@ -12,7 +12,7 @@ El taller se divide en cuatro sesiones tematicas:
    - Modulo 1.1: Ecosistema Hugging Face (datasets, modelos, spaces) y KerasHub para vision y NLP.
    - Modulo 1.2: Descarga y gestion de modelos con Hugging Face y uso de LLMs con LiteRT-LM.
    - Hands-on Labs:
-     * **Lab 1:** Clasificacion de imagenes con KerasHub (`01-kerashub-image-classification/`).
+     * **Lab 1:** Cuadernos interactivos KerasHub (`Keras_Hub.ipynb`, `Gemma4.ipynb`, `notebook.ipynb`) en `01-kerashub-image-classification/`.
      * **Lab 2:** Inferencia web con LiteRT.js (`@litertjs/core`) en el navegador (`02-litert-web-vision/`).
      * **Lab 3:** Chat Web con la API oficial LiteRT-LM Web API y WebGPU (`03-litert-lm-cli-and-web/`).
      * **Lab 4:** Cuaderno interactivo de traduccion e inferencia multimodal VLM (`04-huggingface-translation/`).
