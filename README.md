@@ -85,11 +85,6 @@ Para restablecer el entorno de trabajo y no dejar archivos temporales, imagenes 
 ./cleanup.sh --all
 ```
 
-Tambien puede ejecutarse mediante el script de Python multiplataforma:
-```bash
-python3 scripts/cleanup.py --all
-```
-
 ---
 
 ## Navegacion de Sesiones
