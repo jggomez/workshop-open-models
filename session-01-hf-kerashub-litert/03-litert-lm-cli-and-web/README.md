@@ -76,18 +76,11 @@ for await (const chunk of stream) {
 
 ## 5. Guia de Ejecucion
 
-### Opcion 1: Con NPM (Recomendado)
-Desde la raiz del repositorio:
+Desde la raiz del repositorio del workshop, inicie el portal interactivo:
 ```bash
-npm run lab3
+python3 -m http.server 3000
 ```
-Luego abra en su navegador: **[http://localhost:3001](http://localhost:3001)**.
-
-### Opcion 2: Con Servidor HTTP de Python
-```bash
-python3 -m http.server 3001 --directory session-01-hf-kerashub-litert/03-litert-lm-cli-and-web
-```
-Luego abra en su navegador: **[http://localhost:3001](http://localhost:3001)**.
+Luego abra en su navegador **`http://localhost:3000`** y seleccione el **Lab 3** (o ingrese directamente a `http://localhost:3000/session-01-hf-kerashub-litert/03-litert-lm-cli-and-web/`).
 
 ---
 

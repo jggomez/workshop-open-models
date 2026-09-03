@@ -39,36 +39,30 @@ El taller se divide en cuatro sesiones tematicas:
 
 ## Ejecucion de los Laboratorios Web
 
-Para interactuar con los laboratorios web on-device (Lab 2 y Lab 3), puede iniciar el portal interactivo del workshop:
+Para interactuar con los laboratorios interactivos y las aplicaciones web on-device (Lab 2 y Lab 3), simplemente inicie el portal interactivo del workshop desde la raiz del repositorio:
 
 ```bash
 # Iniciar portal interactivo (puerto 3000)
 python3 -m http.server 3000
-# y abrir en el navegador: http://localhost:3000
 ```
 
-O ejecutar cada laboratorio directamente con npm o Python:
-```bash
-# Laboratorio 3 (Chat Web On-Device con LiteRT-LM Web API / WebGPU en http://localhost:3001)
-npm run lab3
-# o con Python:
-npm run lab3:py
+Luego abra en su navegador: **[http://localhost:3000](http://localhost:3000)**
 
-# Laboratorio 2 (Clasificacion de Vision en Navegador con LiteRT.js en http://localhost:3000)
-npm run lab2
-# o con Python:
-npm run lab2:py
-```
+Desde este portal centralizado podra acceder y ejecutar con un solo clic:
+- **Lab 3:** Chat Web On-Device con LiteRT-LM Web API y aceleracion por hardware WebGPU.
+- **Lab 2:** Inferencia de Clasificacion de Vision en el navegador con LiteRT.js (`@litertjs/core`).
+- Acceso directo y enlaces a la documentacion de los cuadernos de cada sesion.
 
 ---
 
 ## Requisitos Previos e Instalacion
 
 ### 1. Requisitos del Sistema
-- Python 3.10 o superior.
-- Node.js 18 o superior (para los laboratorios web con JavaScript).
+- Python 3.10 o superior (para ejecutar los cuadernos interactivos y el servidor HTTP local).
+- Navegador moderno con soporte WebGPU y WebAssembly (Google Chrome, Microsoft Edge, Safari Tech Preview).
 - Git.
-- Navegador moderno con soporte WebGPU (Google Chrome, Microsoft Edge, Safari Tech Preview).
+
+*(Nota: Los laboratorios web se ejecutan completamente en el navegador del cliente mediante WebGPU, WebAssembly y modulos ES importados via CDN, por lo que no requieren instalar Node.js ni paquetes npm).*
 
 ### 2. Ejecucion de los Cuadernos
 Todos los cuadernos interactivos (`.ipynb`) incluyen en su primera celda los comandos de instalacion correspondientes (`!pip install ...`), por lo que estan completamente listos para ejecutarse con un solo clic en Google Colab o en su entorno local con Jupyter Lab / VS Code.

@@ -162,14 +162,11 @@ for r, idx in enumerate(top5, 1):
 ### Parte B: Inferencia en el Navegador con LiteRT.js (@litertjs/core)
 
 #### Paso 1: Iniciar el servidor local
-Con npm desde la raiz del repositorio:
+Desde la raiz del repositorio del workshop, inicie el portal interactivo:
 ```bash
-npm run lab2
+python3 -m http.server 3000
 ```
-O con el servidor HTTP de Python:
-```bash
-python3 -m http.server 3000 --directory session-01-hf-kerashub-litert/02-litert-web-vision
-```
+Luego abra en su navegador **`http://localhost:3000`** y seleccione el **Lab 2** (o ingrese directamente a `http://localhost:3000/session-01-hf-kerashub-litert/02-litert-web-vision/`).
 
 #### Paso 2: Probar la aplicacion web
 1. Abra su navegador en `http://localhost:3000`.
