@@ -25,10 +25,14 @@ El taller se divide en cuatro sesiones tematicas:
      * **Lab 1 (Sencillo):** Transfer Learning en Vision por Computador con MobileNetV2 y clasificacion de flores (`01_transfer_learning_vision_basics.ipynb`) en `01-transfer-learning-vision-basics/`.
      * **Lab 2 (Avanzado):** Transfer Learning en NLP con BERT (`bert_tiny_en_uncased`), protocolo en 2 fases, matriz de confusion y analisis de sentimientos (`02_transfer_learning_nlp_advanced.ipynb`) en `02-transfer-learning-nlp-advanced/`.
 
-3. **Sesion 3: Fine-Tuning de LLMs (Gemma) con el Ecosistema Hugging Face**
-   - Modulo 3.1: Adaptacion parametrica eficiente (PEFT y LoRA).
-   - Modulo 3.2: Formateo de datasets de instrucciones, chat templates y configuracion de hiperparametros de SFT (Supervised Fine-Tuning).
-   - Hands-on Lab: Fine-tuning supervisado de Gemma con Transformers, TRL y PEFT.
+3. **Sesion 3: Fine-Tuning de LLMs con Hugging Face y Unsloth (SFT, DPO y GGUF)**
+   - Modulo 3.1: Supervised Fine-Tuning (SFT) y adaptacion parametrica eficiente con LoRA (`peft` y `trl`).
+   - Modulo 3.2: Alineacion de preferencias (Preference Alignment) con DPO (Direct Preference Optimization).
+   - Modulo 3.3: Post-entrenamiento acelerado con kernels Triton de Unsloth y exportacion a GGUF para Ollama/vLLM.
+   - Hands-on Labs:
+     * **Lab 1 (SFT):** Supervised Fine-Tuning con Hugging Face y LoRA (`01_sft_lora_huggingface.ipynb`) en `01-sft-lora-huggingface/`.
+     * **Lab 2 (DPO):** Alineacion de preferencias con DPO (`02_preference_alignment_dpo.ipynb`) en `02-preference-alignment-dpo/`.
+     * **Lab 3 (Unsloth):** Fine-Tuning ultra-rapido con Unsloth y exportacion a GGUF para Ollama (`03_fast_finetuning_unsloth_gguf.ipynb`) en `03-fast-finetuning-unsloth-gguf/`.
 
 4. **Sesion 4: Serving en Produccion con Ollama, vLLM y GCP (Vertex AI Model Garden)**
    - Modulo 4.1: Serving de alto rendimiento con Ollama y vLLM (PagedAttention).
@@ -73,7 +77,7 @@ Todos los cuadernos interactivos (`.ipynb`) incluyen en su primera celda los com
 
 - [Sesion 1: Hugging Face, KerasHub y LiteRT / LiteRT-LM](./session-01-hf-kerashub-litert/README.md)
 - [Sesion 2: Transfer Learning con Keras y Hugging Face](./session-02-transfer-learning/README.md)
-- [Sesion 3: Fine-Tuning de LLMs (Gemma) con Hugging Face](./session-03-fine-tuning-llms/README.md)
+- [Sesion 3: Fine-Tuning de LLMs con Hugging Face y Unsloth (SFT, DPO y GGUF)](./session-03-fine-tuning-llms/README.md)
 - [Sesion 4: Serving en Produccion con Ollama, vLLM y GCP](./session-04-production-serving/README.md)
 
 ---

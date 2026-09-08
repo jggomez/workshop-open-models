@@ -1,42 +1,63 @@
-# Sesion 3: Fine-Tuning de LLMs (Gemma) con Hugging Face
+# Sesion 3: Fine-Tuning de LLMs con Hugging Face y Unsloth
 
-Esta sesion profundiza en el ajuste fino supervisado (SFT) de Grandes Modelos de Lenguaje (LLMs) empleando tecnicas parametricamente eficientes (PEFT / LoRA).
+Esta sesion profundiza en el ciclo completo de post-entrenamiento de Modelos de Lenguaje Abiertos (LLMs/SLMs), desde el **Ajuste Fino Supervisado (SFT)** con adaptadores **LoRA**, pasando por la **Alineacion de Preferencias (Preference Alignment)** con **DPO (Direct Preference Optimization)**, hasta el post-entrenamiento acelerado por hardware con **Unsloth** y su exportacion directa a **GGUF** para serving en **Ollama y vLLM**.
 
 ---
 
-## Contenido de la Sesion
+## Modulos Teorico-Practicos
 
-### Modulo 3.1: Adaptacion Parametrica Eficiente (PEFT y LoRA)
-- Limitaciones del fine-tuning completo (Full Fine-Tuning) en recursos de computo y memoria.
-- Fundamentos matematicos de LoRA (Low-Rank Adaptation) y QLoRA (Quantized LoRA).
-- Inyeccion de adaptadores de bajo rango en matrices de proyeccion de atencion (`q_proj`, `v_proj`).
-- Evaluacion de parametros entrenables vs. parametros congelados.
+### Modulo 3.1: Supervised Fine-Tuning (SFT) y Adaptacion Parametrica Eficiente (PEFT / LoRA)
+- **Del Pre-entrenamiento al Post-entrenamiento:** Por que los modelos base requieren afinamiento supervisado para adquirir capacidad instruccional y conocimiento de dominio.
+- **Fundamentos de LoRA:** Descomposicion de bajo rango ($W = W_0 + \frac{\alpha}{r} BA$), evaluacion de parametros entrenables (< 0.5%) y reduccion del consumo de VRAM.
+- **Plantillas de Chat (Chat Templates):** Estandarizacion conversacional con Jinja (`apply_chat_template`) y enmascaramiento de perdida (*response masking*).
+- **Entrenamiento con TRL:** Configuracion de `SFTTrainer` y `SFTConfig` con optimizadores paginados AdamW.
 
-### Modulo 3.2: Datasets de Instrucciones, Chat Templates e Hiperparametros
-- Formateo de datasets estilo instruccional (User / Assistant / System).
-- Estandarizacion con Jinja Chat Templates (`apply_chat_template`).
-- Configuracion del `SFTTrainer` (biblioteca `trl` de Hugging Face).
-- Seleccion optima de hiperparametros: learning rate, warmup ratio, scheduler, gradient accumulation steps y precision mixta (`bf16`/`fp16`).
+### Modulo 3.2: Alineacion de Preferencias con Direct Preference Optimization (DPO)
+- **Limitaciones del SFT:** Por que el SFT no puede penalizar alucinaciones ni modular sutilezas de estilo.
+- **La Revolucion DPO vs RLHF Clasico:** Eliminacion del *Reward Model* y de la inestabilidad de PPO mediante una clasificacion binaria cerrada sobre razones de verosimilitud logaritmica.
+- **Estructuracion de Preferencias:** Datasets ternarios con `prompt`, `chosen` (respuesta factual y concisa) y `rejected` (respuesta alucinada o verbosa).
+- **Entrenamiento con `DPOTrainer`:** Control de divergencia KL con $\beta=0.1$ y tasas de aprendizaje conservadoras ($5\times 10^{-6}$).
 
-### Hands-on Lab 3: SFT con Gemma y PEFT
-- Preparacion del dataset instruccional en formato JSONL / Hugging Face Datasets.
-- Configuracion de `LoraConfig` y cuantizacion de 4 bits (`BitsAndBytesConfig`).
-- Ejecucion del pipeline de entrenamiento con validacion periodica y logging.
-- Fusion de adaptadores LoRA (merge_and_unload) y guardado del artefacto final en Hugging Face Hub / formato local.
+### Modulo 3.3: Post-Entrenamiento Acelerado con Unsloth y Pipeline a Produccion (GGUF / Ollama)
+- **Arquitectura de Kernels Triton:** Como Unsloth duplica la velocidad de calculo y ahorra hasta un 70% de VRAM reescribiendo atencion y derivadas analiticas.
+- **LoRA Extendido:** Inyeccion de adaptadores en todas las matrices lineales (`q`, `k`, `v`, `o`, `gate`, `up`, `down`).
+- **Salida Estructurada:** Entrenamiento para generacion y extraccion de datos en formato JSON estricto.
+- **Exportacion a GGUF y Modelfiles:** Conversion a binarios cuantizados `q4_k_m` y creacion de manifiestos para despliegue inmediato en Ollama y vLLM (conexion con la Sesion 4).
+
+---
+
+## Indice de Hands-on Labs de la Sesion 3
+
+| Laboratorio | Directorio | Cuaderno Principal | Enfoque Tecnico | Dominio / Tarea |
+|---|---|---|---|---|
+| **Lab 1 (SFT)** | `01-sft-lora-huggingface/` | `01_sft_lora_huggingface.ipynb` | Supervised Fine-Tuning con Hugging Face `trl` (`SFTTrainer`) y `peft` (LoRA). | Soporte Tecnico / Respuestas de Dominio |
+| **Lab 2 (DPO)** | `02-preference-alignment-dpo/` | `02_preference_alignment_dpo.ipynb` | Preference Alignment con Direct Preference Optimization (`DPOTrainer`) sobre ternas *chosen* vs *rejected*. | Mitigacion de Alucinaciones y Concision |
+| **Lab 3 (Unsloth)** | `03-fast-finetuning-unsloth-gguf/` | `03_fast_finetuning_unsloth_gguf.ipynb` | Fine-Tuning de alto rendimiento con kernels Triton de Unsloth y exportacion a binario GGUF con `Modelfile` para Ollama. | Extraccion Estructurada en JSON / Serving |
 
 ---
 
 ## Estructura de Materiales
 
-- `01-peft-lora-configuration/`
-- `02-instruction-dataset-formatting/`
-- `03-sft-gemma-training/`
-- `notebooks/`
+```text
+session-03-fine-tuning-llms/
+├── README.md                                      # Esta guia general de la sesion
+├── 01-sft-lora-huggingface/                       # Lab 1: SFT y LoRA con Hugging Face
+│   ├── README.md
+│   └── 01_sft_lora_huggingface.ipynb
+├── 02-preference-alignment-dpo/                   # Lab 2: Alineacion DPO con Hugging Face TRL
+│   ├── README.md
+│   └── 02_preference_alignment_dpo.ipynb
+└── 03-fast-finetuning-unsloth-gguf/               # Lab 3: Unsloth QLoRA y Exportacion GGUF para Ollama
+    ├── README.md
+    └── 03_fast_finetuning_unsloth_gguf.ipynb
+```
 
 ---
 
-## Referencias Oficiales
+## Referencias Oficiales y Documentacion
 
-- **Hugging Face PEFT Documentation:** [https://huggingface.co/docs/peft/](https://huggingface.co/docs/peft/)
 - **Hugging Face TRL (Transformer Reinforcement Learning):** [https://huggingface.co/docs/trl/](https://huggingface.co/docs/trl/)
-- **Google Gemma Model Fine-Tuning:** [https://ai.google.dev/gemma/docs/lora_tuning](https://ai.google.dev/gemma/docs/lora_tuning)
+- **Hugging Face PEFT (Parameter-Efficient Fine-Tuning):** [https://huggingface.co/docs/peft/](https://huggingface.co/docs/peft/)
+- **Paper Original DPO (Rafailov et al., Stanford 2023):** [https://arxiv.org/abs/2305.18290](https://arxiv.org/abs/2305.18290)
+- **Documentacion de Unsloth:** [https://docs.unsloth.ai/](https://docs.unsloth.ai/)
+- **Ecosistema Ollama:** [https://ollama.com/](https://ollama.com/)
