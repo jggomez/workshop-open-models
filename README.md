@@ -11,7 +11,8 @@ El taller se divide en cuatro sesiones tematicas:
 1. **Sesion 1: Hugging Face, KerasHub y el uso de LLMs con LiteRT / LiteRT-LM**
    - Modulo 1.1: Ecosistema Hugging Face (datasets, modelos, spaces) y KerasHub para vision y NLP.
    - Modulo 1.2: Descarga y gestion de modelos con Hugging Face y uso de LLMs con LiteRT-LM.
-   - Hands-on Labs:
+   - Hands-on Labs y Material Tecnico:
+     * **Playbook de Ingenieria:** [Guia Teorico-Practica de Referencia (Sesion 1)](./session-01-hf-kerashub-litert/playbook-tecnico-sesion-1.md).
      * **Lab 1:** Cuadernos interactivos KerasHub (`01_kerashub_getting_started.ipynb`, `02_gemma4_multimodal_ai.ipynb`, `03_imagenet_classification_basics.ipynb`) en `01-kerashub-image-classification/`.
      * **Lab 2:** Inferencia web con LiteRT.js (`@litertjs/core`) en el navegador y cuaderno (`01_litert_interpreter_inspection.ipynb`) en `02-litert-web-vision/`.
      * **Lab 3:** Chat Web con la API oficial LiteRT-LM Web API y WebGPU (`03-litert-lm-cli-and-web/`).
