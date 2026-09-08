@@ -2,6 +2,8 @@
 
 Esta sesion proporciona los fundamentos practicos para la descarga, gestion, preprocesamiento e inferencia de modelos de Deep Learning y Modelos de Lenguaje (LLMs/SLMs) utilizando los frameworks mas adoptados de la industria: Hugging Face, KerasHub y Google LiteRT.
 
+- **Documento Teórico y Playbook de Arquitectura:** [Playbook de Ingenieria (Sesion 1)](./playbook-tecnico-sesion-1.md)
+
 ---
 
 ## Modulos Teorico-Practicos
