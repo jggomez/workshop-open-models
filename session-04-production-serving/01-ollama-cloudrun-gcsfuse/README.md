@@ -306,7 +306,119 @@ curl -s -X POST "${CLOUD_RUN_URL}/v1/chat/completions" \
 
 ---
 
-## 7. Referencias Oficiales
+## 7. Limpieza de Recursos (Teardown)
+
+Ejecutar al terminar el laboratorio. Los recursos creados generan cargos continuos aunque no haya trafico: el almacenamiento en GCS, las imagenes en Artifact Registry y cualquier instancia con `--min-instances=1` o GPU.
+
+> **Estas operaciones son irreversibles.** Verificar el proyecto activo antes de empezar:
+> ```bash
+> gcloud config get-value project
+> ```
+
+### Variables
+
+```bash
+export PROJECT_ID=$(gcloud config get-value project)
+export REGION="us-central1"
+export SERVICE_NAME="ollama-service"
+export BUCKET_NAME="${PROJECT_ID}-ollama-models"
+export ARTIFACT_REPO="ollama-repo"
+```
+
+### 1. Eliminar el servicio de Cloud Run
+
+Detiene toda facturacion de computo de forma inmediata. Si solo se hace un paso de limpieza, que sea este.
+
+```bash
+gcloud run services delete "${SERVICE_NAME}" \
+  --region="${REGION}" \
+  --project="${PROJECT_ID}" \
+  --quiet
+```
+
+### 2. Eliminar el bucket y los modelos
+
+```bash
+# Revisar el contenido antes de borrar
+gcloud storage ls -r "gs://${BUCKET_NAME}/"
+
+# Borrado recursivo del bucket completo
+gcloud storage rm -r "gs://${BUCKET_NAME}" --project="${PROJECT_ID}"
+```
+
+El `.gguf` original permanece en la maquina local y en Ollama, asi que este borrado no pierde el modelo afinado.
+
+### 3. Eliminar el repositorio de Artifact Registry
+
+```bash
+gcloud artifacts repositories delete "${ARTIFACT_REPO}" \
+  --location="${REGION}" \
+  --project="${PROJECT_ID}" \
+  --quiet
+```
+
+Borra todas las imagenes que contiene. Para conservar el repositorio y eliminar solo la imagen del laboratorio:
+
+```bash
+gcloud artifacts docker images delete \
+  "${REGION}-docker.pkg.dev/${PROJECT_ID}/${ARTIFACT_REPO}/${SERVICE_NAME}" \
+  --delete-tags --quiet
+```
+
+### 4. Eliminar artefactos de Cloud Build
+
+Cloud Build deja los contextos de compilacion en un bucket propio que sigue facturando almacenamiento:
+
+```bash
+gcloud storage ls | grep -E "cloudbuild|_cloudbuild"
+gcloud storage rm -r "gs://${PROJECT_ID}_cloudbuild" --project="${PROJECT_ID}"
+```
+
+El nombre del bucket varia segun el proyecto y la region. El `grep` confirma cual existe antes de borrarlo.
+
+### 5. Revocar el permiso IAM
+
+Solo si el bucket no se elimino en el paso 2. Al borrar el bucket desaparece tambien su politica IAM.
+
+```bash
+export PROJECT_NUMBER=$(gcloud projects describe "${PROJECT_ID}" --format="value(projectNumber)")
+export SERVICE_ACCOUNT="${PROJECT_NUMBER}-compute@developer.gserviceaccount.com"
+
+gcloud storage buckets remove-iam-policy-binding "gs://${BUCKET_NAME}" \
+  --member="serviceAccount:${SERVICE_ACCOUNT}" \
+  --role="roles/storage.objectAdmin" \
+  --project="${PROJECT_ID}"
+```
+
+### 6. Verificar que no queda nada
+
+```bash
+gcloud run services list --region="${REGION}" --project="${PROJECT_ID}"
+gcloud storage ls --project="${PROJECT_ID}"
+gcloud artifacts repositories list --location="${REGION}" --project="${PROJECT_ID}"
+```
+
+Confirmar tambien en la consola de facturacion que no hay cargos activos: los datos de facturacion tardan hasta 24 horas en reflejarse.
+
+### Nota sobre las APIs habilitadas
+
+El script habilito `run`, `artifactregistry`, `storage` y `cloudbuild`. **Habilitar una API no genera cargos por si misma**, solo su uso. No es necesario deshabilitarlas, y hacerlo puede afectar a otros servicios del mismo proyecto. Si aun asi se quiere revertir:
+
+```bash
+gcloud services disable run.googleapis.com --project="${PROJECT_ID}"
+```
+
+### Limpieza local (opcional)
+
+```bash
+# Eliminar el modelo del catalogo local de Ollama
+ollama rm techcloud-classifier
+ollama list
+```
+
+---
+
+## 8. Referencias Oficiales
 
 - **Cloud Run Volume Mounts (Cloud Storage FUSE):** https://cloud.google.com/run/docs/configuring/services/cloud-storage-volume-mounts
 - **Cloud Run GPU:** https://cloud.google.com/run/docs/configuring/services/gpu
