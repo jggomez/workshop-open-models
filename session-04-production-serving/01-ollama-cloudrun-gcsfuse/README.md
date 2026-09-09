@@ -7,7 +7,9 @@ Este laboratorio ensena el ciclo de puesta en produccion de modelos cuantizados 
 ## 1. Fundamentos Tecnologicos: Por que Ollama y por que GCS FUSE?
 
 ### El Rol de Ollama en Inferencia Ligera
+
 **Ollama** empaqueta el motor de inferencia `llama.cpp` en una arquitectura de servicio que proporciona:
+
 - Gestion automatizada de memoria y descompresion de pesos cuantizados (GGUF).
 - API REST nativa (`/api/generate`, `/api/chat`, `/api/tags`).
 - API compatible con el protocolo de OpenAI (`/v1/chat/completions`), lo que facilita la integracion con bibliotecas existentes como LangChain, LlamaIndex o SDKs oficiales de OpenAI.
@@ -42,24 +44,17 @@ Cloud Run provee soporte nativo de **Cloud Storage Volume Mounts** (respaldado p
 
 ### Paso 1: Localizar los Artefactos de la Sesion 3
 
-En la Sesion 3 se generaron dos artefactos:
+Verificar el nombre real del binario GGUF antes de continuar:
 
-1. El binario cuantizado **GGUF**. Verificar el nombre real antes de continuar:
-   ```bash
-   ls -lh model_gguf_gguf/
-   ```
-   Unsloth anade el sufijo `_gguf` al directorio indicado y nombra el archivo
-   segun el modelo base (por ejemplo `gemma-2-2b-it.Q4_K_M.gguf`), no
-   `unsloth.Q4_K_M.gguf`.
+```bash
+ls -lh model_gguf_gguf/
+```
 
-2. El manifiesto **`Modelfile`**.
+Unsloth anade el sufijo `_gguf` al directorio indicado y nombra el archivo segun el modelo base, por ejemplo `gemma-2-2b-it.Q4_K_M.gguf`.
 
-> **Importante:** Unsloth genera su propio `Modelfile` dentro de
-> `model_gguf_gguf/`. Ese archivo trae `temperature 1.5` y **no incluye la
-> instruccion de la tarea**, por lo que no reproduce el formato de
-> entrenamiento. Usar el manifiesto de abajo en su lugar.
+> Unsloth genera tambien su propio `Modelfile` dentro de ese directorio. Ese archivo trae `temperature 1.5` y **no incluye la instruccion de la tarea**, por lo que no reproduce el formato de entrenamiento. Usar el manifiesto de abajo en su lugar.
 
-#### Manifiesto correcto
+### Paso 2: Escribir el Manifiesto (`Modelfile`)
 
 ```dockerfile
 FROM ./gemma-2-2b-it.Q4_K_M.gguf
@@ -77,28 +72,33 @@ Analiza el siguiente ticket de soporte y extrae la informacion en formato JSON c
 """
 ```
 
-Diferencias frente al manifiesto de la version anterior del laboratorio:
+Razones de cada decision:
 
-| Cambio | Motivo |
+| Elemento | Motivo |
 |---|---|
-| Sin bloque `SYSTEM` ni rama `{{ if .System }}` | Gemma-2 no define rol de sistema. No existe `<start_of_turn>system` y el modelo nunca lo vio durante el entrenamiento. |
-| Instruccion dentro del `TEMPLATE` | El fine-tuning uso la instruccion delante de cada ticket. Si el usuario envia solo el ticket, el modelo recibe un formato que no vio. |
-| `temperature 0` en lugar de `0.2` | La validacion se hizo con `do_sample=False` (greedy). Para extraccion de JSON se busca determinismo, no variedad. |
-| Sin `top_p` | Con temperatura 0 no hay muestreo aleatorio que ajustar. |
-| Stop adicional `<start_of_turn>` | Evita que el modelo abra un turno nuevo en lugar de cerrar. |
+| Sin bloque `SYSTEM` | Gemma-2 no define rol de sistema. No existe `<start_of_turn>system` y el modelo nunca lo vio durante el entrenamiento. |
+| Instruccion dentro del `TEMPLATE` | El fine-tuning uso la instruccion delante de cada ticket. El usuario envia solo el ticket y la plantilla completa el resto. |
+| `temperature 0` | La validacion se hizo con `do_sample=False` (greedy). Para extraccion de JSON se busca determinismo, no variedad. |
+| Sin `top_p` ni `repeat_penalty` | Con temperatura 0 no hay muestreo aleatorio que ajustar. |
+| Dos `stop` | `<end_of_turn>` cierra el turno; `<start_of_turn>` evita que el modelo abra uno nuevo en lugar de detenerse. |
 | Sin `<bos>` en la plantilla | `llama.cpp` lo inserta segun los metadatos del GGUF. Anadirlo a mano produce doble BOS y degeneracion de la salida. |
 
-### Paso 2: Crear el Modelo en Ollama Local
+### Paso 3: Crear el Modelo en Ollama Local
 
-El `Modelfile` y el `.gguf` deben estar en el **mismo directorio** (`FROM ./` es
-una ruta relativa al manifiesto).
+El `Modelfile` y el `.gguf` deben estar en el **mismo directorio**, ya que `FROM ./` es una ruta relativa al manifiesto.
 
 ```bash
 ollama create techcloud-classifier -f Modelfile
 ollama list
 ```
 
-### Paso 3: Probar la Inferencia Local
+Confirmar que el manifiesto quedo registrado como se esperaba:
+
+```bash
+ollama show techcloud-classifier --modelfile
+```
+
+### Paso 4: Probar la Inferencia Local
 
 ```bash
 ollama run techcloud-classifier "Alerta: El cluster de Redis esta al 99% de memoria y rechazando llaves."
@@ -106,42 +106,32 @@ ollama run techcloud-classifier "Alerta: El cluster de Redis esta al 99% de memo
 
 Se envia unicamente el texto del ticket: la instruccion la anade el `TEMPLATE`.
 
-Verificar que el manifiesto quedo registrado como se esperaba:
-
-```bash
-ollama show techcloud-classifier --modelfile
-```
-
 Prueba programatica:
 
 ```bash
 python3 test_client.py http://localhost:11434 techcloud-classifier
 ```
 
+El cliente devuelve codigo de salida 0 si ambas APIs responden con JSON valido.
+
 ---
 
 ## 4. Parte B: Despliegue en Google Cloud Run con GCS FUSE
 
-### Paso 0: Variables y APIs
+### Paso 1: Variables de Entorno
 
 ```bash
 export PROJECT_ID=$(gcloud config get-value project)
 export REGION="us-central1"
 export BUCKET_NAME="${PROJECT_ID}-ollama-models"
-export REPO="ollama-repo"
-export IMAGE="${REGION}-docker.pkg.dev/${PROJECT_ID}/${REPO}/ollama-service:latest"
-
-gcloud services enable \
-  run.googleapis.com \
-  cloudbuild.googleapis.com \
-  artifactregistry.googleapis.com \
-  storage.googleapis.com
+export ARTIFACT_REPO="ollama-repo"
 ```
 
-### Paso 1: Subir los Modelos al Bucket
+### Paso 2: Subir los Modelos al Bucket
 
-Ollama guarda los modelos en `manifests/` y `blobs/`. La ubicacion del
-directorio depende de la instalacion:
+Ollama organiza su almacen en dos directorios: `blobs/` guarda los datos pesados identificados por hash, y `manifests/` guarda archivos JSON que describen cada modelo referenciando esos hashes. **Se copian ambos**, no el `.gguf` original.
+
+La ubicacion depende de la instalacion:
 
 | Instalacion | Ruta |
 |---|---|
@@ -164,62 +154,41 @@ gcloud storage buckets create "gs://${BUCKET_NAME}" \
 gcloud storage cp -r ~/.ollama/models "gs://${BUCKET_NAME}/"
 ```
 
-Verificar que la estructura quedo correcta:
+Verificar la estructura resultante:
 
 ```bash
 gcloud storage ls "gs://${BUCKET_NAME}/models/"
 # Debe listar: manifests/ y blobs/
 ```
 
-### Paso 2: Dockerfile
+Sin los manifests, Ollama tiene los datos pero no sabe que exista ningun modelo registrado.
+
+### Paso 3: Dockerfile
 
 ```dockerfile
 FROM ollama/ollama:latest
 
-# Cloud Run inyecta PORT; Ollama escucha en 11434 por defecto.
+# Cloud Run sondea el puerto 8080; Ollama escucha en 11434 por defecto.
 ENV OLLAMA_HOST=0.0.0.0:8080
+
+# Punto de montaje del bucket via Cloud Storage FUSE
 ENV OLLAMA_MODELS=/root/.ollama/models
 
 EXPOSE 8080
+
 ENTRYPOINT ["/bin/ollama"]
 CMD ["serve"]
 ```
 
-### Paso 3: Construir y Publicar la Imagen
+Para builds reproducibles, sustituir `:latest` por el tag de version que se ejecuta en local (`ollama --version`).
 
-Este paso faltaba en la version anterior del laboratorio: `gcloud run deploy`
-referencia una imagen que debe existir previamente en el registro.
+### Paso 4: Desplegar
 
-```bash
-gcloud artifacts repositories create "${REPO}" \
-  --repository-format=docker \
-  --location="${REGION}"
-
-gcloud builds submit --tag "${IMAGE}"
-```
-
-> `gcr.io` (Container Registry) fue reemplazado por Artifact Registry.
-> Verificar el estado actual en la documentacion de GCP, ya que las fechas de
-> retirada se han ido ajustando.
-
-### Paso 4: Permisos del Service Account
-
-La cuenta de servicio de Cloud Run necesita acceso al bucket. Ollama escribe en
-`/root/.ollama`, por lo que **no basta con lectura**:
+El script `deploy_cloud_run.sh` automatiza el ciclo completo: habilita APIs, crea el bucket y el repositorio de Artifact Registry, compila la imagen con Cloud Build, configura los permisos IAM y despliega el servicio.
 
 ```bash
-export SA=$(gcloud run services describe ollama-service \
-  --region="${REGION}" --format="value(spec.template.spec.serviceAccountName)" 2>/dev/null)
-export SA=${SA:-$(gcloud projects describe ${PROJECT_ID} --format='value(projectNumber)')-compute@developer.gserviceaccount.com}
+chmod +x deploy_cloud_run.sh
 
-gcloud storage buckets add-iam-policy-binding "gs://${BUCKET_NAME}" \
-  --member="serviceAccount:${SA}" \
-  --role="roles/storage.objectAdmin"
-```
-
-### Paso 5: Desplegar el Servicio
-
-```bash
 # Opcion 1: CPU multi-core
 ./deploy_cloud_run.sh
 
@@ -227,11 +196,11 @@ gcloud storage buckets add-iam-policy-binding "gs://${BUCKET_NAME}" \
 USE_GPU=true ./deploy_cloud_run.sh
 ```
 
-Comando subyacente (CPU):
+Comando subyacente en modo CPU:
 
 ```bash
 gcloud run deploy ollama-service \
-  --image="${IMAGE}" \
+  --image="${REGION}-docker.pkg.dev/${PROJECT_ID}/${ARTIFACT_REPO}/ollama-service:latest" \
   --platform=managed \
   --region="${REGION}" \
   --project="${PROJECT_ID}" \
@@ -241,41 +210,35 @@ gcloud run deploy ollama-service \
   --concurrency=8 \
   --timeout=600 \
   --execution-environment=gen2 \
+  --no-cpu-throttling \
   --add-volume="name=ollama-store,type=cloud-storage,bucket=${BUCKET_NAME}" \
   --add-volume-mount="volume=ollama-store,mount-path=/root/.ollama"
 ```
 
-Variante con GPU. La version anterior del laboratorio ofrecia `USE_GPU=true`
-pero el comando no incluia ningun flag de GPU, por lo que desplegaba en CPU:
+Flags adicionales en modo GPU:
 
 ```bash
-gcloud run deploy ollama-service \
-  --image="${IMAGE}" \
-  --region="${REGION}" \
-  --port=8080 \
-  --cpu=8 \
-  --memory=32Gi \
   --gpu=1 \
   --gpu-type=nvidia-l4 \
-  --no-cpu-throttling \
-  --max-instances=3 \
-  --concurrency=16 \
-  --timeout=600 \
-  --execution-environment=gen2 \
-  --add-volume="name=ollama-store,type=cloud-storage,bucket=${BUCKET_NAME}" \
-  --add-volume-mount="volume=ollama-store,mount-path=/root/.ollama"
+  --no-gpu-zonal-redundancy \
+  --max-instances=3
 ```
 
-> La GPU en Cloud Run tiene restricciones de region, cuota y limite de
-> instancias que cambian con frecuencia. Confirmar disponibilidad y flags
-> vigentes en la documentacion oficial antes de ejecutar. Revisar tambien que
-> `deploy_cloud_run.sh` implemente realmente la rama `USE_GPU`.
+> Los flags de GPU en Cloud Run, su disponibilidad por region y la cuota asociada cambian con frecuencia. Confirmar en la documentacion oficial antes de ejecutar.
 
-#### Sobre `--allow-unauthenticated`
+### Paso 5: Permisos IAM
 
-La version anterior lo incluia por defecto. Eso deja el endpoint de inferencia
-abierto a internet: cualquiera con la URL consume cuota y presupuesto. Para el
-laboratorio es aceptable; fuera de el, omitirlo e invocar con token:
+El script lo gestiona automaticamente, pero conviene entender el requisito: la cuenta de servicio necesita el rol `roles/storage.objectAdmin` sobre el bucket. **No basta con lectura**, porque Ollama escribe en `/root/.ollama`, que es el punto de montaje.
+
+```bash
+gcloud storage buckets add-iam-policy-binding "gs://${BUCKET_NAME}" \
+  --member="serviceAccount:${SERVICE_ACCOUNT}" \
+  --role="roles/storage.objectAdmin"
+```
+
+### Nota sobre `--allow-unauthenticated`
+
+El script despliega con esta opcion, lo que deja el endpoint de inferencia abierto a internet: cualquiera con la URL consume cuota y presupuesto. Para el laboratorio es aceptable; fuera de el, omitirla e invocar con token:
 
 ```bash
 curl -H "Authorization: Bearer $(gcloud auth print-identity-token)" ...
@@ -291,23 +254,31 @@ export CLOUD_RUN_URL=$(gcloud run services describe ollama-service \
 echo "Servicio activo en: ${CLOUD_RUN_URL}"
 ```
 
-### 1. Comprobar version y modelos disponibles
+### 1. Estado del servicio
 
 ```bash
 curl -s "${CLOUD_RUN_URL}/api/version"
+```
 
-# Confirma que el volumen FUSE se monto y Ollama ve los modelos.
-# Si devuelve una lista vacia, el problema esta en el montaje o los permisos.
+### 2. Modelos visibles
+
+Esta es la verificacion clave del montaje FUSE:
+
+```bash
 curl -s "${CLOUD_RUN_URL}/api/tags" | jq .
 ```
 
-### 2. Inferencia con el cliente Python
+Una lista vacia indica que el volumen no se monto o que faltan los manifests en el bucket. Revisar en ese orden: la ruta de montaje del deploy, el contenido de `gs://BUCKET/models/manifests/` y los permisos IAM de la cuenta de servicio.
+
+### 3. Inferencia con el cliente Python
 
 ```bash
 python3 test_client.py "${CLOUD_RUN_URL}" techcloud-classifier
 ```
 
-### 3. Invocacion compatible con OpenAI
+La primera peticion tras un cold start puede tardar varios minutos: FUSE lee el GGUF completo por streaming desde GCS. Las siguientes son rapidas.
+
+### 4. Invocacion compatible con OpenAI
 
 ```bash
 curl -s -X POST "${CLOUD_RUN_URL}/v1/chat/completions" \
@@ -321,24 +292,17 @@ curl -s -X POST "${CLOUD_RUN_URL}/v1/chat/completions" \
   }' | jq .
 ```
 
-> `temperature` en la peticion **sobrescribe** el valor del `Modelfile`. La
-> version anterior enviaba `0.1`, rompiendo el determinismo configurado. Enviar
-> `0` o omitir el campo.
+> El campo `temperature` de la peticion **sobrescribe** el valor del `Modelfile`. Enviar `0` u omitirlo para conservar el determinismo. Del mismo modo, no enviar mensajes con `"role": "system"`: Gemma-2 no define ese rol.
 
 ---
 
 ## 6. Optimizacion Operativa y Mejores Practicas
 
-1. **Cold starts.** `--min-instances=1` evita la latencia de inicializacion del
-   contenedor y montaje FUSE. Para desarrollo, `--min-instances=0` garantiza
-   costo cero sin trafico.
-2. **Concurrencia.** En modelos de 2B a 7B sobre CPU, usar `--concurrency=4` u
-   `8`. Sobre NVIDIA L4 puede subirse a 16 o 32 segun el tamano de contexto.
-3. **Primera peticion.** Con FUSE, la carga inicial del GGUF se lee por
-   streaming desde GCS. La primera inferencia tras un cold start es
-   notablemente mas lenta que las siguientes.
-4. **Logs y metricas.** Quedan registrados de forma nativa en Cloud Logging y
-   Cloud Monitoring.
+1. **Cold starts.** `--min-instances=1` evita la latencia de inicializacion del contenedor y montaje FUSE. Para desarrollo, `--min-instances=0` garantiza costo cero sin trafico.
+2. **Concurrencia.** En modelos de 2B a 7B sobre CPU, usar `--concurrency=4` u `8`. Sobre NVIDIA L4 puede subirse a 16 o 32 segun el tamano de contexto.
+3. **Actualizacion de pesos.** Al estar desacoplados de la imagen, basta con subir el nuevo modelo al bucket y reiniciar el servicio. No hace falta reconstruir el contenedor.
+4. **Logs y metricas.** Quedan registrados de forma nativa en Cloud Logging y Cloud Monitoring.
+5. **Costos.** Revisar la facturacion al terminar el laboratorio. Cloud Build, Artifact Registry, el almacenamiento en GCS y las instancias con `--min-instances=1` o GPU generan cargos continuos.
 
 ---
 
