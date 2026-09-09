@@ -23,6 +23,7 @@ El taller se divide en cuatro sesiones tematicas:
    - Modulo 2.1: Estrategias de Transfer Learning: Feature Extraction con cabezales personalizados, congelamiento de capas (layer freezing) y prevencion de olvido catastrofico.
    - Modulo 2.2: Fine-tuning progresivo en 2 etapas con tasas de aprendizaje discriminativas sobre arquitecturas convolucionales y Transformers.
    - Hands-on Labs:
+     * **Playbook de Ingenieria:** [Playbook Estrategico y Tecnico de Transfer Learning (Sesion 2)](./session-02-transfer-learning/playbook-tecnico-sesion-2.md).
      * **Lab 1 (Sencillo):** Transfer Learning en Vision por Computador con MobileNetV2 y clasificacion de flores (`01_transfer_learning_vision_basics.ipynb`) en `01-transfer-learning-vision-basics/`.
      * **Lab 2 (Avanzado):** Transfer Learning en NLP con BERT (`bert_tiny_en_uncased`), protocolo en 2 fases, matriz de confusion y analisis de sentimientos (`02_transfer_learning_nlp_advanced.ipynb`) en `02-transfer-learning-nlp-advanced/`.
 

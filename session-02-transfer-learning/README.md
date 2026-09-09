@@ -2,6 +2,8 @@
 
 Esta sesion proporciona las tecnicas metodologicas y arquitecturas avanzadas de **Transfer Learning (Aprendizaje por Transferencia)** para adaptar modelos pre-entrenados de vision por computador y procesamiento de lenguaje natural (NLP) a problemas especificos de negocio con minima necesidad de datos y computo.
 
+- **Documento Teorico y Playbook de Arquitectura:** [Playbook de Ingenieria (Sesion 2)](./playbook-tecnico-sesion-2.md)
+
 ---
 
 ## Modulos Teorico-Practicos
@@ -32,6 +34,7 @@ Esta sesion proporciona las tecnicas metodologicas y arquitecturas avanzadas de 
 ```text
 session-02-transfer-learning/
 ├── README.md                                # Esta guia general de la sesion
+├── playbook-tecnico-sesion-2.md             # Playbook teorico y estrategico de Transfer Learning
 ├── 01-transfer-learning-vision-basics/      # Lab 1: Vision - Feature Extraction con MobileNetV2
 │   ├── README.md
 │   └── 01_transfer_learning_vision_basics.ipynb
