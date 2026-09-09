@@ -36,9 +36,13 @@ El taller se divide en cuatro sesiones tematicas:
      * **Lab 3 (Unsloth):** Fine-Tuning ultra-rapido con Unsloth y exportacion a GGUF para Ollama (`03_fast_finetuning_unsloth_gguf.ipynb`) en `03-fast-finetuning-unsloth-gguf/`.
 
 4. **Sesion 4: Serving en Produccion con Ollama, vLLM y GCP (Vertex AI Model Garden)**
-   - Modulo 4.1: Serving de alto rendimiento con Ollama y vLLM (PagedAttention).
-   - Modulo 4.2: Despliegue en la nube con Google Cloud Platform (GCP) y Vertex AI Model Garden.
-   - Hands-on Lab: Arquitectura de serving hibrido (local y cloud).
+   - Modulo 4.1: Serving serverless y perimetral con Ollama y Cloud Storage FUSE en Cloud Run.
+   - Modulo 4.2: Serving de alta concurrencia con vLLM, PagedAttention, GPU NVIDIA L4 y Model Armor.
+   - Modulo 4.3: Ingestion y hosting administrado en la nube con Vertex AI Model Garden (MaaS vs Dedicated Endpoints).
+   - Hands-on Labs:
+     * **Lab 1:** Inferencia local con Ollama (GGUF de Sesion 3) y despliegue a Cloud Run con Cloud Storage FUSE (`01-ollama-cloudrun-gcsfuse/`).
+     * **Lab 2:** Serving empresarial con vLLM y Gemma en Cloud Run GPU, Model Armor y observabilidad (`02-vllm-gemma-cloudrun-production/`).
+     * **Lab 3:** Despliegue de DeepSeek y Gemma con Vertex AI Model Garden (`03-vertex-ai-model-garden/`).
 
 ---
 
