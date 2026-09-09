@@ -188,4 +188,5 @@ curl -s -X POST "${CLOUD_RUN_URL}/v1/chat/completions" \
 - **Cloud Run Volume Mounts (Cloud Storage FUSE):** [https://cloud.google.com/run/docs/configuring/services/cloud-storage-volume-mounts](https://cloud.google.com/run/docs/configuring/services/cloud-storage-volume-mounts)
 - **Documentacion Oficial de Ollama:** [https://ollama.com/](https://ollama.com/)
 - **API Reference de Ollama:** [https://github.com/ollama/ollama/blob/main/docs/api.md](https://github.com/ollama/ollama/blob/main/docs/api.md)
+- **Guia Oficial del Formato GGUF en Hugging Face Hub:** [https://huggingface.co/docs/hub/gguf](https://huggingface.co/docs/hub/gguf)
 - **Especificacion GGUF (llama.cpp):** [https://github.com/ggerganov/llama.cpp](https://github.com/ggerganov/llama.cpp)

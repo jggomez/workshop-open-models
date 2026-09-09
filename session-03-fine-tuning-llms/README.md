@@ -60,4 +60,5 @@ session-03-fine-tuning-llms/
 - **Hugging Face PEFT (Parameter-Efficient Fine-Tuning):** [https://huggingface.co/docs/peft/](https://huggingface.co/docs/peft/)
 - **Paper Original DPO (Rafailov et al., Stanford 2023):** [https://arxiv.org/abs/2305.18290](https://arxiv.org/abs/2305.18290)
 - **Documentacion de Unsloth:** [https://docs.unsloth.ai/](https://docs.unsloth.ai/)
+- **Guia Oficial del Formato GGUF en Hugging Face Hub:** [https://huggingface.co/docs/hub/gguf](https://huggingface.co/docs/hub/gguf)
 - **Ecosistema Ollama:** [https://ollama.com/](https://ollama.com/)

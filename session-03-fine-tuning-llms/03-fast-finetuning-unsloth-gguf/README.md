@@ -13,10 +13,16 @@ Este laboratorio practico avanzado aborda tecnicas de alto rendimiento en el pos
 3. **Throughput de Entrenamiento:** Logra entre **2x y 5x mayor velocidad** frente a pipelines convencionales de Hugging Face, manteniendo exactamente el **0% de perdida en precision**.
 
 ### El Formato GGUF y el Ecosistema Ollama / vLLM
-El formato **GGUF (Georgi Gerganov Unified Format)** es el estandar universal de la comunidad de codigo abierto para inferencia perimetral y serving de alto rendimiento:
-- Permite empaquetar pesos cuantizados (e.g. `q4_k_m`) y tokenizadores en un unico archivo autocontenido.
-- Es el formato nativo para motores como **Ollama**, **vLLM** y **llama.cpp**.
-- Permite desplegar el modelo resultante en servidores locales o en la nube con un simple `Modelfile`.
+El formato **GGUF (Georgi Gerganov Unified Format)**, concebido originalmente por Georgi Gerganov para `llama.cpp` y adoptado de forma nativa por Hugging Face, es el estandar universal de la comunidad de codigo abierto para inferencia perimetral y serving de alto rendimiento:
+
+1. **GGUF frente a Safetensors:**
+   A diferencia de formatos que almacenan exclusivamente tensores numericos puros como `safetensors` (que requieren archivos independientes como `tokenizer.json`, `config.json` y plantillas Jinja), **GGUF codifica tanto los tensores cuantizados como un conjunto estandarizado de metadatos** (arquitectura del modelo, vocabulario completo, hiperparametros y plantillas de chat) en un unico archivo binario autocontenido optimizado para carga instantanea via `mmap`.
+
+2. **Esquema de Cuantizacion K-quants (`q4_k_m`):**
+   Utiliza super-bloques con factores de escala diferenciados (`block_scale` y `block_min`), alcanzando ~4.5 bits reales por parametro. A diferencia de cuantizaciones heredadas de 4 bits (`q4_0` o `q4_1`), `q4_k_m` preserva la fidelidad de razonamiento del modelo pre-entrenado reduciendo el consumo de VRAM y RAM en mas del 70%.
+
+3. **Ecosistema Integrado y Soporte en Hugging Face Hub:**
+   El Hugging Face Hub dispone de soporte nativo para inspeccionar la metadata y tensores de archivos GGUF en su visor web, exploracion por etiqueta (`library=gguf`), integracion con bibliotecas cliente como `@huggingface/gguf` y herramientas de conversion automatizada (`ggml-org/gguf-my-repo`). Los motores de serving **Ollama**, **vLLM** y **llama.cpp** consumen este binario directamente mediante un archivo `Modelfile`.
 
 ---
 
@@ -63,4 +69,5 @@ jupyter lab session-03-fine-tuning-llms/03-fast-finetuning-unsloth-gguf/03_fast_
 - **Repositorio Oficial de Unsloth:** [https://github.com/unslothai/unsloth](https://github.com/unslothai/unsloth)
 - **Documentacion de Unsloth:** [https://docs.unsloth.ai/](https://docs.unsloth.ai/)
 - **Documentacion Oficial de Ollama:** [https://ollama.com/](https://ollama.com/)
+- **Guia Oficial del Formato GGUF en Hugging Face Hub:** [https://huggingface.co/docs/hub/gguf](https://huggingface.co/docs/hub/gguf)
 - **Especificacion del Formato GGUF (llama.cpp):** [https://github.com/ggerganov/llama.cpp](https://github.com/ggerganov/llama.cpp)
