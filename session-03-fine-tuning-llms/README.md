@@ -17,6 +17,7 @@ Esta sesion profundiza en el ciclo completo de post-entrenamiento de Modelos de 
 - **La Revolucion DPO vs RLHF Clasico:** Eliminacion del *Reward Model* y de la inestabilidad de PPO mediante una clasificacion binaria cerrada sobre razones de verosimilitud logaritmica.
 - **Estructuracion de Preferencias:** Datasets ternarios con `prompt`, `chosen` (respuesta factual y concisa) y `rejected` (respuesta alucinada o verbosa).
 - **Entrenamiento con `DPOTrainer`:** Control de divergencia KL con $\beta=0.1$ y tasas de aprendizaje conservadoras ($5\times 10^{-6}$).
+- **Evaluacion Cuantitativa Rigurosa:** Medicion de *Reward Accuracy* intrinseca (split reservado) y protocolo ciego *LLM-as-a-Judge* con control de sesgo posicional (*Win Rate*).
 
 ### Modulo 3.3: Post-Entrenamiento Acelerado con Unsloth y Pipeline a Produccion (GGUF / Ollama)
 - **Arquitectura de Kernels Triton:** Como Unsloth duplica la velocidad de calculo y ahorra hasta un 70% de VRAM reescribiendo atencion y derivadas analiticas.
@@ -31,7 +32,7 @@ Esta sesion profundiza en el ciclo completo de post-entrenamiento de Modelos de 
 | Laboratorio | Directorio | Cuaderno Principal | Enfoque Tecnico | Dominio / Tarea |
 |---|---|---|---|---|
 | **Lab 1 (SFT)** | `01-sft-lora-huggingface/` | `01_sft_lora_huggingface.ipynb` | Supervised Fine-Tuning con Hugging Face `trl` (`SFTTrainer`) y `peft` (LoRA). | Soporte Tecnico / Respuestas de Dominio |
-| **Lab 2 (DPO)** | `02-preference-alignment-dpo/` | `02_preference_alignment_dpo.ipynb` | Preference Alignment con Direct Preference Optimization (`DPOTrainer`) sobre ternas *chosen* vs *rejected*. | Mitigacion de Alucinaciones y Concision |
+| **Lab 2 (DPO)** | `02-preference-alignment-dpo/` | `02_preference_alignment_dpo.ipynb` | Preference Alignment con DPO y evaluacion cuantitativa dual (Reward Accuracy y LLM-as-a-Judge Win Rate). | Mitigacion de Alucinaciones y Concision |
 | **Lab 3 (Unsloth)** | `03-fast-finetuning-unsloth-gguf/` | `03_fast_finetuning_unsloth_gguf.ipynb` | Fine-Tuning de alto rendimiento con kernels Triton de Unsloth y exportacion a binario GGUF con `Modelfile` para Ollama. | Extraccion Estructurada en JSON / Serving |
 
 ---

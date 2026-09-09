@@ -22,6 +22,13 @@ $$\mathcal{L}_{DPO}(\pi_\theta; \pi_{ref}) = -\mathbb{E}_{(x, y_w, y_l)} \left[ 
 - $y_l$ (*rejected*): Respuesta defectuosa o alucinada.
 - $\beta$: Coeficiente de penalizacion de divergencia KL (tipicamente $0.1$).
 
+### Evaluacion Cuantitativa Rigurosa (Superando la Inspeccion Subjetiva)
+Para validar cientificamente que el modelo aprendio las preferencias deseadas, implementamos dos niveles de medicion cuantitativa reproducible:
+1. **Nivel 1: Metricas Intrinsecas de Recompensa (Reward Margin & Accuracy):**
+   Calcula la recompensa implicita $r_\theta(x, y) = \beta (\log \pi_\theta(y|x) - \log \pi_{ref}(y|x))$ y el margen $\Delta r = r_\theta(x, y_w) - r_\theta(x, y_l)$ sobre un conjunto de prueba reservado. Mide el **Reward Accuracy (%)**, que pasa de un ~50% azaroso en el modelo base a >80%-100% en el modelo DPO.
+2. **Nivel 2: Protocolo LLM-as-a-Judge con Control de Sesgos (Win Rate):**
+   Enfrentamiento ciego pareado (*pairwise blind comparison*) entre el modelo base y el modelo DPO, mitigando activamente el **sesgo posicional (Position Bias)** mediante evaluacion cruzada (`[A, B]` y `[B, A]`) y penalizando la verborrea innecesaria (*Length Bias*).
+
 ---
 
 ## 2. Estructura del Laboratorio
@@ -39,12 +46,14 @@ $$\mathcal{L}_{DPO}(\pi_\theta; \pi_{ref}) = -\mathbb{E}_{(x, y_w, y_l)} \left[ 
 - **Paso 1:** Instalacion de `trl`, `transformers`, `peft`, `accelerate` y `bitsandbytes`.
 - **Paso 2:** Verificacion de hardware y soporte CUDA.
 - **Paso 3:** Carga del modelo base (`google/gemma-2-2b-it` o `Qwen/Qwen2.5-1.5B-Instruct`) cuantizado en 4-bit (`nf4`).
-- **Paso 4:** Creacion de un dataset de preferencias ternarias con columnas `prompt`, `chosen` y `rejected`.
+- **Paso 4:** Creacion del dataset de preferencias ternarias con split formal 80/20 (`train_dpo_dataset` y `eval_dpo_dataset`).
 - **Paso 5:** Configuracion de adaptadores LoRA mediante `peft.LoraConfig`.
 - **Paso 6:** Entrenamiento de alineacion con `trl.DPOTrainer` y `trl.DPOConfig` ($\beta=0.1$, $lr=5\times 10^{-6}$).
-- **Paso 7:** Evaluacion cualitativa verificando como el modelo favorece las respuestas concisas y factuales mientras descarta el estilo de las respuestas rechazadas.
-- **Paso 8:** Exportacion y guardado de los adaptadores LoRA alineados.
-- **Paso 9:** Liberacion de memoria y tensores VRAM.
+- **Paso 7:** **Evaluacion Cuantitativa Nivel 1:** Calculo determinista de log-probabilidades, margen de recompensa $\Delta r$ y *Reward Accuracy (%)* en el split reservado.
+- **Paso 8:** **Evaluacion Cuantitativa Nivel 2:** Protocolo ciego *LLM-as-a-Judge*, mitigacion de sesgo posicional cruzado A/B y calculo de *Win Rate (%)*.
+- **Paso 9:** Evaluacion cualitativa comparativa de respuestas lado a lado (Base vs DPO).
+- **Paso 10:** Exportacion y guardado de los adaptadores LoRA alineados.
+- **Paso 11:** Liberacion de memoria y tensores VRAM.
 
 ---
 
@@ -67,3 +76,5 @@ jupyter lab session-03-fine-tuning-llms/02-preference-alignment-dpo/02_preferenc
 - **Paper Original de DPO (Rafailov et al., 2023):** [https://arxiv.org/abs/2305.18290](https://arxiv.org/abs/2305.18290)
 - **Hugging Face TRL DPOTrainer:** [https://huggingface.co/docs/trl/dpo_trainer](https://huggingface.co/docs/trl/dpo_trainer)
 - **Hugging Face Alignment Handbook:** [https://github.com/huggingface/alignment-handbook](https://github.com/huggingface/alignment-handbook)
+- **AlpacaEval (LLM-as-a-Judge Benchmark):** [https://github.com/tatsu-lab/alpaca_eval](https://github.com/tatsu-lab/alpaca_eval)
+- **MT-Bench (Judging LLM-as-a-Judge with MT-Bench and Chatbot Arena):** [https://arxiv.org/abs/2306.05685](https://arxiv.org/abs/2306.05685)

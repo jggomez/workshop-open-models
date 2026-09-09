@@ -33,7 +33,7 @@ El taller se divide en cuatro sesiones tematicas:
    - Modulo 3.3: Post-entrenamiento acelerado con kernels Triton de Unsloth y exportacion a GGUF para Ollama/vLLM.
    - Hands-on Labs:
      * **Lab 1 (SFT):** Supervised Fine-Tuning con Hugging Face y LoRA (`01_sft_lora_huggingface.ipynb`) en `01-sft-lora-huggingface/`.
-     * **Lab 2 (DPO):** Alineacion de preferencias con DPO (`02_preference_alignment_dpo.ipynb`) en `02-preference-alignment-dpo/`.
+     * **Lab 2 (DPO):** Alineacion de preferencias con DPO y evaluacion cuantitativa (Reward Accuracy y LLM-as-a-Judge) (`02_preference_alignment_dpo.ipynb`) en `02-preference-alignment-dpo/`.
      * **Lab 3 (Unsloth):** Fine-Tuning ultra-rapido con Unsloth y exportacion a GGUF para Ollama (`03_fast_finetuning_unsloth_gguf.ipynb`) en `03-fast-finetuning-unsloth-gguf/`.
 
 4. **Sesion 4: Serving en Produccion con Ollama, vLLM y GCP (Vertex AI Model Garden)**
