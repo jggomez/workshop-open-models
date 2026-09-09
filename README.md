@@ -13,19 +13,19 @@ El taller se divide en cuatro sesiones tematicas:
    - Modulo 1.2: Descarga y gestion de modelos con Hugging Face y uso de LLMs con LiteRT-LM.
    - Hands-on Labs y Material Tecnico:
      * **Playbook de Ingenieria:** [Guia Teorico-Practica de Referencia (Sesion 1)](./session-01-hf-kerashub-litert/playbook-tecnico-sesion-1.md).
-     * **Lab 1:** Cuadernos interactivos KerasHub (`01_kerashub_getting_started.ipynb`, `02_gemma4_multimodal_ai.ipynb`, `03_imagenet_classification_basics.ipynb`) en `01-kerashub-image-classification/`.
-     * **Lab 2:** Inferencia web con LiteRT.js (`@litertjs/core`) en el navegador y cuaderno (`01_litert_interpreter_inspection.ipynb`) en `02-litert-web-vision/`.
-     * **Lab 3:** Chat Web con la API oficial LiteRT-LM Web API y WebGPU (`03-litert-lm-cli-and-web/`).
-     * **Lab 4:** Cuaderno interactivo de traduccion e inferencia multimodal VLM (`01_huggingface_translation_and_vlm.ipynb`) en `04-huggingface-translation/`.
-     * **Lab 5:** Cuaderno interactivo de evaluacion de datasets de Hugging Face con Gemma Multimodal (`01_huggingface_datasets_gemma_multimodal.ipynb`) en `05-huggingface-gemma-datasets/`.
+     * **Lab 1:** Cuadernos interactivos KerasHub (`01_kerashub_getting_started.ipynb`, `02_gemma4_multimodal_ai.ipynb`, `03_imagenet_classification_basics.ipynb`) en [`01-kerashub-image-classification/`](./session-01-hf-kerashub-litert/01-kerashub-image-classification/README.md).
+     * **Lab 2:** Inferencia web con LiteRT.js (`@litertjs/core`) en el navegador y cuaderno (`01_litert_interpreter_inspection.ipynb`) en [`02-litert-web-vision/`](./session-01-hf-kerashub-litert/02-litert-web-vision/README.md).
+     * **Lab 3:** Chat Web con la API oficial LiteRT-LM Web API y WebGPU en [`03-litert-lm-cli-and-web/`](./session-01-hf-kerashub-litert/03-litert-lm-cli-and-web/README.md).
+     * **Lab 4:** Cuaderno interactivo de traduccion e inferencia multimodal VLM (`01_huggingface_translation_and_vlm.ipynb`) en [`04-huggingface-translation/`](./session-01-hf-kerashub-litert/04-huggingface-translation/README.md).
+     * **Lab 5:** Cuaderno interactivo de evaluacion de datasets de Hugging Face con Gemma Multimodal (`01_huggingface_datasets_gemma_multimodal.ipynb`) en [`05-huggingface-gemma-datasets/`](./session-01-hf-kerashub-litert/05-huggingface-gemma-datasets/README.md).
 
 2. **Sesion 2: Transfer Learning con Keras y Hugging Face**
    - Modulo 2.1: Estrategias de Transfer Learning: Feature Extraction con cabezales personalizados, congelamiento de capas (layer freezing) y prevencion de olvido catastrofico.
    - Modulo 2.2: Fine-tuning progresivo en 2 etapas con tasas de aprendizaje discriminativas sobre arquitecturas convolucionales y Transformers.
-   - Hands-on Labs:
+   - Hands-on Labs y Material Tecnico:
      * **Playbook de Ingenieria:** [Playbook Estrategico y Tecnico de Transfer Learning (Sesion 2)](./session-02-transfer-learning/playbook-tecnico-sesion-2.md).
-     * **Lab 1 (Sencillo):** Transfer Learning en Vision por Computador con MobileNetV2 y clasificacion de flores (`01_transfer_learning_vision_basics.ipynb`) en `01-transfer-learning-vision-basics/`.
-     * **Lab 2 (Avanzado):** Transfer Learning en NLP con BERT (`bert_tiny_en_uncased`), protocolo en 2 fases, matriz de confusion y analisis de sentimientos (`02_transfer_learning_nlp_advanced.ipynb`) en `02-transfer-learning-nlp-advanced/`.
+     * **Lab 1 (Sencillo):** Transfer Learning en Vision por Computador con MobileNetV2 y clasificacion de flores (`01_transfer_learning_vision_basics.ipynb`) en [`01-transfer-learning-vision-basics/`](./session-02-transfer-learning/01-transfer-learning-vision-basics/README.md).
+     * **Lab 2 (Avanzado):** Transfer Learning en NLP con BERT (`bert_tiny_en_uncased`), protocolo en 2 fases, matriz de confusion y analisis de sentimientos (`02_transfer_learning_nlp_advanced.ipynb`) en [`02-transfer-learning-nlp-advanced/`](./session-02-transfer-learning/02-transfer-learning-nlp-advanced/README.md).
 
 3. **Sesion 3: Fine-Tuning de LLMs con Hugging Face y Unsloth (SFT, DPO y GGUF)**
    - Modulo 3.1: Supervised Fine-Tuning (SFT) y adaptacion parametrica eficiente con LoRA (`peft` y `trl`).
@@ -33,18 +33,19 @@ El taller se divide en cuatro sesiones tematicas:
    - Modulo 3.3: Post-entrenamiento acelerado con kernels Triton de Unsloth y exportacion a GGUF para Ollama/vLLM.
    - Hands-on Labs y Material Tecnico:
      * **Playbook de Ingenieria:** [Playbook Tecnico de Fine-Tuning con LoRA, QLoRA y DPO (Sesion 3)](./session-03-fine-tuning-llms/playbook-tecnico-sesion-3.md).
-     * **Lab 1 (SFT):** Supervised Fine-Tuning con Hugging Face y LoRA (`01_sft_lora_huggingface.ipynb`) en `01-sft-lora-huggingface/`.
-     * **Lab 2 (DPO):** Alineacion de preferencias con DPO y evaluacion cuantitativa (Reward Accuracy y LLM-as-a-Judge) (`02_preference_alignment_dpo.ipynb`) en `02-preference-alignment-dpo/`.
-     * **Lab 3 (Unsloth):** Fine-Tuning ultra-rapido con Unsloth y exportacion a GGUF para Ollama (`03_fast_finetuning_unsloth_gguf.ipynb`) en `03-fast-finetuning-unsloth-gguf/`.
+     * **Lab 1 (SFT):** Supervised Fine-Tuning con Hugging Face y LoRA (`01_sft_lora_huggingface.ipynb`) en [`01-sft-lora-huggingface/`](./session-03-fine-tuning-llms/01-sft-lora-huggingface/README.md).
+     * **Lab 2 (DPO):** Alineacion de preferencias con DPO y evaluacion cuantitativa dual (Reward Accuracy y LLM-as-a-Judge con control de sesgo de posicion) (`02_preference_alignment_dpo.ipynb`) en [`02-preference-alignment-dpo/`](./session-03-fine-tuning-llms/02-preference-alignment-dpo/README.md).
+     * **Lab 3 (Unsloth):** Fine-Tuning ultra-rapido con Unsloth y exportacion a GGUF para Ollama/vLLM (`03_fast_finetuning_unsloth_gguf.ipynb`) en [`03-fast-finetuning-unsloth-gguf/`](./session-03-fine-tuning-llms/03-fast-finetuning-unsloth-gguf/README.md).
 
 4. **Sesion 4: Serving en Produccion con Ollama, vLLM y GCP (Vertex AI Model Garden)**
    - Modulo 4.1: Serving serverless y perimetral con Ollama y Cloud Storage FUSE en Cloud Run.
    - Modulo 4.2: Serving de alta concurrencia con vLLM, PagedAttention, GPU NVIDIA L4 y Model Armor.
    - Modulo 4.3: Ingestion y hosting administrado en la nube con Vertex AI Model Garden (MaaS vs Dedicated Endpoints).
-   - Hands-on Labs:
-     * **Lab 1:** Inferencia local con Ollama (GGUF de Sesion 3) y despliegue a Cloud Run con Cloud Storage FUSE (`01-ollama-cloudrun-gcsfuse/`).
-     * **Lab 2:** Serving empresarial con vLLM y Gemma en Cloud Run GPU, Model Armor y observabilidad (`02-vllm-gemma-cloudrun-production/`).
-     * **Lab 3:** Despliegue de DeepSeek y Gemma con Vertex AI Model Garden (`03-vertex-ai-model-garden/`).
+   - Hands-on Labs y Material Tecnico:
+     * **Playbook de Ingenieria:** [Playbook de Ingenieria de Inferencia y Serving en Produccion (Sesion 4)](./session-04-production-serving/playbook-ingenieria-inferencia.md).
+     * **Lab 1:** Inferencia local con Ollama (GGUF de Sesion 3), despliegue serverless a Cloud Run con Cloud Storage FUSE y Artifact Registry en [`01-ollama-cloudrun-gcsfuse/`](./session-04-production-serving/01-ollama-cloudrun-gcsfuse/README.md).
+     * **Lab 2:** Serving empresarial con vLLM y Gemma en Cloud Run GPU, Model Armor y observabilidad en [`02-vllm-gemma-cloudrun-production/`](./session-04-production-serving/02-vllm-gemma-cloudrun-production/README.md).
+     * **Lab 3:** Despliegue de DeepSeek y Gemma con Vertex AI Model Garden (MaaS vs Endpoints Dedicados) en [`03-vertex-ai-model-garden/`](./session-04-production-serving/03-vertex-ai-model-garden/README.md).
 
 ---
 
@@ -72,8 +73,9 @@ Desde este portal centralizado podra acceder y ejecutar con un solo clic:
 - Python 3.10 o superior (para ejecutar los cuadernos interactivos y el servidor HTTP local).
 - Navegador moderno con soporte WebGPU y WebAssembly (Google Chrome, Microsoft Edge, Safari Tech Preview).
 - Git.
+- Google Cloud SDK (`gcloud` CLI) y Docker (para las practicas de despliegue a produccion en Cloud Run y Vertex AI de la Sesion 4).
 
-*(Nota: Los laboratorios web se ejecutan completamente en el navegador del cliente mediante WebGPU, WebAssembly y modulos ES importados via CDN, por lo que no requieren instalar Node.js ni paquetes npm).*
+*(Nota: Los laboratorios web de la Sesion 1 se ejecutan completamente en el navegador del cliente mediante WebGPU, WebAssembly y modulos ES importados via CDN, por lo que no requieren instalar Node.js ni paquetes npm).*
 
 ### 2. Ejecucion de los Cuadernos
 Todos los cuadernos interactivos (`.ipynb`) incluyen en su primera celda los comandos de instalacion correspondientes (`!pip install ...`), por lo que estan completamente listos para ejecutarse con un solo clic en Google Colab o en su entorno local con Jupyter Lab / VS Code.
@@ -100,3 +102,5 @@ Todos los cuadernos interactivos (`.ipynb`) incluyen en su primera celda los com
 - **Google Gemma Open Models:** [https://ai.google.dev/gemma](https://ai.google.dev/gemma)
 - **Ollama Documentation:** [https://ollama.com/](https://ollama.com/)
 - **vLLM Project:** [https://docs.vllm.ai/](https://docs.vllm.ai/)
+- **Google Cloud Run (Volume Mounts con GCS FUSE):** [https://cloud.google.com/run/docs/configuring/services/cloud-storage-volume-mounts](https://cloud.google.com/run/docs/configuring/services/cloud-storage-volume-mounts)
+- **Google Cloud Vertex AI Model Garden:** [https://cloud.google.com/vertex-ai/docs/model-garden/explore-models](https://cloud.google.com/vertex-ai/docs/model-garden/explore-models)

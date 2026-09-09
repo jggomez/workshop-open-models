@@ -2,6 +2,7 @@
 
 Esta sesion esta orientada a la puesta en produccion, despliegue de alta concurrencia y arquitectura de serving en la nube para modelos de lenguaje y vision de codigo abierto, abarcando desde la inferencia perimetral y serverless con **Ollama** y **Google Cloud Run**, pasando por clusters de alto rendimiento con **vLLM**, hasta plataformas administradas con **Vertex AI Model Garden**.
 
+- **Playbook de Ingenieria:** [Playbook de Ingenieria de Inferencia (Sesion 4)](./playbook-ingenieria-inferencia.md)
 - **Prerrequisito y Fundamentos de Post-Entrenamiento:** [Playbook Tecnico de Fine-Tuning y Alineacion (Sesion 3)](../session-03-fine-tuning-llms/playbook-tecnico-sesion-3.md)
 
 ---
@@ -31,9 +32,9 @@ Esta sesion esta orientada a la puesta en produccion, despliegue de alta concurr
 
 | Laboratorio | Directorio | Formato | Descripcion Tecnica | Tecnologias Clave |
 |---|---|---|---|---|
-| **Lab 1** | `01-ollama-cloudrun-gcsfuse/` | Shell + Docker + Python | Inferencia local con Ollama (GGUF de Sesion 3) y despliegue serverless a Cloud Run con Cloud Storage FUSE. | Ollama, GGUF, Cloud Run, GCS FUSE, Python |
-| **Lab 2** | `02-vllm-gemma-cloudrun-production/` | Blueprint SRE + Python Client | Serving de alta concurrencia con vLLM y Gemma 2 en Cloud Run GPU (L4), Model Armor y Prometheus sidecar. | vLLM, PagedAttention, Cloud Run GPU, Model Armor |
-| **Lab 3** | `03-vertex-ai-model-garden/` | Guia Markdown + Python SDK | Guia paso a paso para desplegar DeepSeek y Gemma en Vertex AI Model Garden (MaaS vs Dedicated Endpoints). | Vertex AI, Model Garden, DeepSeek, Python SDK |
+| **Lab 1** | [`01-ollama-cloudrun-gcsfuse/`](./01-ollama-cloudrun-gcsfuse/README.md) | Shell + Docker + Python | Inferencia local con Ollama (GGUF de Sesion 3) y despliegue serverless a Cloud Run con Cloud Storage FUSE, Artifact Registry y protocolo de limpieza. | Ollama, GGUF, Cloud Run, GCS FUSE, Artifact Registry, Python |
+| **Lab 2** | [`02-vllm-gemma-cloudrun-production/`](./02-vllm-gemma-cloudrun-production/README.md) | Blueprint SRE + Python Client | Serving de alta concurrencia con vLLM y Gemma 2 en Cloud Run GPU (L4), Model Armor y Prometheus sidecar. | vLLM, PagedAttention, Cloud Run GPU, Model Armor, Prometheus |
+| **Lab 3** | [`03-vertex-ai-model-garden/`](./03-vertex-ai-model-garden/README.md) | Guia Markdown + Python SDK | Guia paso a paso para desplegar DeepSeek y Gemma en Vertex AI Model Garden (MaaS vs Dedicated Endpoints). | Vertex AI, Model Garden, DeepSeek, Gemma, Python SDK |
 
 ---
 
@@ -42,6 +43,7 @@ Esta sesion esta orientada a la puesta en produccion, despliegue de alta concurr
 ```text
 session-04-production-serving/
 ├── README.md                                # Esta guia general de la sesion
+├── playbook-ingenieria-inferencia.md        # Playbook de Ingenieria de Inferencia (llama.cpp, Ollama, vLLM, Vertex AI)
 ├── 01-ollama-cloudrun-gcsfuse/              # Lab 1: Ollama Local y Despliegue en Cloud Run con GCS FUSE
 │   ├── README.md
 │   ├── Dockerfile

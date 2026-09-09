@@ -24,8 +24,8 @@ Esta sesion proporciona las tecnicas metodologicas y arquitecturas avanzadas de 
 
 | Laboratorio | Directorio | Cuaderno Principal | Enfoque Tecnico | Dominio |
 |---|---|---|---|---|
-| **Lab 1 (Sencillo)** | `01-transfer-learning-vision-basics/` | `01_transfer_learning_vision_basics.ipynb` | Extraccion de caracteristicas con backbone convolucional pre-entrenado congelado (**MobileNetV2** en ImageNet) y cabezal personalizado. | Vision por Computador (Flores) |
-| **Lab 2 (Avanzado)** | `02-transfer-learning-nlp-advanced/` | `02_transfer_learning_nlp_advanced.ipynb` | Protocolo en 2 fases con **BERT** (`bert_tiny_en_uncased`), descongelamiento progresivo, matriz de confusion y analisis de sentimientos. | NLP / Lenguaje Natural (Texto) |
+| **Lab 1 (Sencillo)** | [`01-transfer-learning-vision-basics/`](./01-transfer-learning-vision-basics/README.md) | [`01_transfer_learning_vision_basics.ipynb`](./01-transfer-learning-vision-basics/01_transfer_learning_vision_basics.ipynb) | Extraccion de caracteristicas con backbone convolucional pre-entrenado congelado (**MobileNetV2** en ImageNet) y cabezal personalizado. | Vision por Computador (Flores) |
+| **Lab 2 (Avanzado)** | [`02-transfer-learning-nlp-advanced/`](./02-transfer-learning-nlp-advanced/README.md) | [`02_transfer_learning_nlp_advanced.ipynb`](./02-transfer-learning-nlp-advanced/02_transfer_learning_nlp_advanced.ipynb) | Protocolo en 2 fases con **BERT** (`bert_tiny_en_uncased`), descongelamiento progresivo, matriz de confusion y analisis de sentimientos. | NLP / Lenguaje Natural (Texto) |
 
 ---
 

@@ -33,9 +33,9 @@ Esta sesion profundiza en el ciclo completo de post-entrenamiento de Modelos de 
 
 | Laboratorio | Directorio | Cuaderno Principal | Enfoque Tecnico | Dominio / Tarea |
 |---|---|---|---|---|
-| **Lab 1 (SFT)** | `01-sft-lora-huggingface/` | `01_sft_lora_huggingface.ipynb` | Supervised Fine-Tuning con Hugging Face `trl` (`SFTTrainer`) y `peft` (LoRA). | Soporte Tecnico / Respuestas de Dominio |
-| **Lab 2 (DPO)** | `02-preference-alignment-dpo/` | `02_preference_alignment_dpo.ipynb` | Preference Alignment con DPO y evaluacion cuantitativa dual (Reward Accuracy y LLM-as-a-Judge Win Rate). | Mitigacion de Alucinaciones y Concision |
-| **Lab 3 (Unsloth)** | `03-fast-finetuning-unsloth-gguf/` | `03_fast_finetuning_unsloth_gguf.ipynb` | Fine-Tuning de alto rendimiento con kernels Triton de Unsloth y exportacion a binario GGUF con `Modelfile` para Ollama. | Extraccion Estructurada en JSON / Serving |
+| **Lab 1 (SFT)** | [`01-sft-lora-huggingface/`](./01-sft-lora-huggingface/README.md) | [`01_sft_lora_huggingface.ipynb`](./01-sft-lora-huggingface/01_sft_lora_huggingface.ipynb) | Supervised Fine-Tuning con Hugging Face `trl` (`SFTTrainer`) y `peft` (LoRA). | Soporte Tecnico / Respuestas de Dominio |
+| **Lab 2 (DPO)** | [`02-preference-alignment-dpo/`](./02-preference-alignment-dpo/README.md) | [`02_preference_alignment_dpo.ipynb`](./02-preference-alignment-dpo/02_preference_alignment_dpo.ipynb) | Preference Alignment con DPO y evaluacion cuantitativa dual (Reward Accuracy y LLM-as-a-Judge Win Rate con mitigacion de sesgo posicional). | Mitigacion de Alucinaciones y Concision |
+| **Lab 3 (Unsloth)** | [`03-fast-finetuning-unsloth-gguf/`](./03-fast-finetuning-unsloth-gguf/README.md) | [`03_fast_finetuning_unsloth_gguf.ipynb`](./03-fast-finetuning-unsloth-gguf/03_fast_finetuning_unsloth_gguf.ipynb) | Fine-Tuning de alto rendimiento con kernels Triton de Unsloth y exportacion a binario GGUF con `Modelfile` para Ollama/vLLM. | Extraccion Estructurada en JSON / Serving |
 
 ---
 

@@ -24,11 +24,41 @@ Esta sesion proporciona los fundamentos practicos para la descarga, gestion, pre
 
 | Laboratorio | Directorio | Formato | Descripcion Tecnica | Tecnologias |
 |---|---|---|---|---|
-| **Lab 1** | `01-kerashub-image-classification/` | Notebooks Interactivos | Vision con ResNet-50, LLMs con Gemma 3, fine-tuning Cats vs Dogs y multimodalidad con Gemma 4. | Python, KerasHub, JAX, Gemma 4 |
-| **Lab 2** | `02-litert-web-vision/` | Web App + Notebook | Inferencia de vision en el navegador mediante LiteRT.js (`@litertjs/core`). | JavaScript, LiteRT.js, WebAssembly, ai-edge-litert |
-| **Lab 3** | `03-litert-lm-cli-and-web/` | Web App | Inferencia de SLMs/LLMs on-device con la API oficial LiteRT-LM Web API. | JavaScript, LiteRT-LM Web API, WebGPU |
-| **Lab 4** | `04-huggingface-translation/` | Notebook Interactivo | Traduccion con `pipeline()` e inferencia multimodal con `AutoModelForMultimodalLM`. | Python, Transformers, MarianMT, SmolVLM |
-| **Lab 5** | `05-huggingface-gemma-datasets/` | Notebook Interactivo | Descarga de datasets con `datasets` e inferencia multimodal con Gemma (`AutoModelForMultimodalLM`). | Python, Datasets, Transformers, Gemma |
+| **Lab 1** | [`01-kerashub-image-classification/`](./01-kerashub-image-classification/README.md) | Notebooks Interactivos | Vision con ResNet-50, LLMs con Gemma 3, fine-tuning Cats vs Dogs y multimodalidad con Gemma 4. | Python, KerasHub, JAX, Gemma 4 |
+| **Lab 2** | [`02-litert-web-vision/`](./02-litert-web-vision/README.md) | Web App + Notebook | Inferencia de vision en el navegador mediante LiteRT.js (`@litertjs/core`). | JavaScript, LiteRT.js, WebAssembly, ai-edge-litert |
+| **Lab 3** | [`03-litert-lm-cli-and-web/`](./03-litert-lm-cli-and-web/README.md) | Web App | Inferencia de SLMs/LLMs on-device con la API oficial LiteRT-LM Web API. | JavaScript, LiteRT-LM Web API, WebGPU |
+| **Lab 4** | [`04-huggingface-translation/`](./04-huggingface-translation/README.md) | Notebook Interactivo | Traduccion con `pipeline()` e inferencia multimodal con `AutoModelForMultimodalLM`. | Python, Transformers, MarianMT, SmolVLM |
+| **Lab 5** | [`05-huggingface-gemma-datasets/`](./05-huggingface-gemma-datasets/README.md) | Notebook Interactivo | Descarga de datasets con `datasets` e inferencia multimodal con Gemma (`AutoModelForMultimodalLM`). | Python, Datasets, Transformers, Gemma |
+
+---
+
+## Estructura de Materiales
+
+```text
+session-01-hf-kerashub-litert/
+├── README.md                                  # Esta guia general de la sesion
+├── playbook-tecnico-sesion-1.md               # Playbook de ingenieria y fundamentos
+├── 01-kerashub-image-classification/         # Lab 1: Vision, LLMs y Gemma 4 con KerasHub
+│   ├── README.md
+│   ├── 01_kerashub_getting_started.ipynb
+│   ├── 02_gemma4_multimodal_ai.ipynb
+│   └── 03_imagenet_classification_basics.ipynb
+├── 02-litert-web-vision/                      # Lab 2: Inferencia de Vision en Navegador con LiteRT.js
+│   ├── README.md
+│   ├── index.html
+│   ├── app.js
+│   └── 01_litert_interpreter_inspection.ipynb
+├── 03-litert-lm-cli-and-web/                  # Lab 3: Chat Web On-Device con LiteRT-LM Web API
+│   ├── README.md
+│   ├── index.html
+│   └── app.js
+├── 04-huggingface-translation/                # Lab 4: Traduccion y VLM con Transformers
+│   ├── README.md
+│   └── 01_huggingface_translation_and_vlm.ipynb
+└── 05-huggingface-gemma-datasets/             # Lab 5: Datasets e Inferencia Multimodal Gemma
+    ├── README.md
+    └── 01_huggingface_datasets_gemma_multimodal.ipynb
+```
 
 ---
 
