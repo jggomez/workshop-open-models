@@ -31,7 +31,8 @@ El taller se divide en cuatro sesiones tematicas:
    - Modulo 3.1: Supervised Fine-Tuning (SFT) y adaptacion parametrica eficiente con LoRA (`peft` y `trl`).
    - Modulo 3.2: Alineacion de preferencias (Preference Alignment) con DPO (Direct Preference Optimization).
    - Modulo 3.3: Post-entrenamiento acelerado con kernels Triton de Unsloth y exportacion a GGUF para Ollama/vLLM.
-   - Hands-on Labs:
+   - Hands-on Labs y Material Tecnico:
+     * **Playbook de Ingenieria:** [Playbook Tecnico de Fine-Tuning con LoRA, QLoRA y DPO (Sesion 3)](./session-03-fine-tuning-llms/playbook-tecnico-sesion-3.md).
      * **Lab 1 (SFT):** Supervised Fine-Tuning con Hugging Face y LoRA (`01_sft_lora_huggingface.ipynb`) en `01-sft-lora-huggingface/`.
      * **Lab 2 (DPO):** Alineacion de preferencias con DPO y evaluacion cuantitativa (Reward Accuracy y LLM-as-a-Judge) (`02_preference_alignment_dpo.ipynb`) en `02-preference-alignment-dpo/`.
      * **Lab 3 (Unsloth):** Fine-Tuning ultra-rapido con Unsloth y exportacion a GGUF para Ollama (`03_fast_finetuning_unsloth_gguf.ipynb`) en `03-fast-finetuning-unsloth-gguf/`.
@@ -40,7 +41,8 @@ El taller se divide en cuatro sesiones tematicas:
    - Modulo 4.1: Serving serverless y perimetral con Ollama y Cloud Storage FUSE en Cloud Run.
    - Modulo 4.2: Serving de alta concurrencia con vLLM, PagedAttention, GPU NVIDIA L4 y Model Armor.
    - Modulo 4.3: Ingestion y hosting administrado en la nube con Vertex AI Model Garden (MaaS vs Dedicated Endpoints).
-   - Hands-on Labs:
+   - Hands-on Labs y Material Tecnico:
+     * **Playbook de Ingenieria:** [Playbook Tecnico: De Fine-Tuning a Serving en Produccion](./session-04-production-serving/playbook-tecnico-fine-tuning-lora-qlora-dpo.md).
      * **Lab 1:** Inferencia local con Ollama (GGUF de Sesion 3) y despliegue a Cloud Run con Cloud Storage FUSE (`01-ollama-cloudrun-gcsfuse/`).
      * **Lab 2:** Serving empresarial con vLLM y Gemma en Cloud Run GPU, Model Armor y observabilidad (`02-vllm-gemma-cloudrun-production/`).
      * **Lab 3:** Despliegue de DeepSeek y Gemma con Vertex AI Model Garden (`03-vertex-ai-model-garden/`).

@@ -2,6 +2,8 @@
 
 Esta sesion profundiza en el ciclo completo de post-entrenamiento de Modelos de Lenguaje Abiertos (LLMs/SLMs), desde el **Ajuste Fino Supervisado (SFT)** con adaptadores **LoRA**, pasando por la **Alineacion de Preferencias (Preference Alignment)** con **DPO (Direct Preference Optimization)**, hasta el post-entrenamiento acelerado por hardware con **Unsloth** y su exportacion directa a **GGUF** para serving en **Ollama y vLLM**.
 
+- **Documento Teorico y Playbook de Arquitectura:** [Playbook Tecnico: LoRA, QLoRA y DPO (Sesion 3)](./playbook-tecnico-sesion-3.md)
+
 ---
 
 ## Modulos Teorico-Practicos
@@ -42,6 +44,7 @@ Esta sesion profundiza en el ciclo completo de post-entrenamiento de Modelos de 
 ```text
 session-03-fine-tuning-llms/
 ├── README.md                                      # Esta guia general de la sesion
+├── playbook-tecnico-sesion-3.md                   # Playbook tecnico de LoRA, QLoRA y DPO
 ├── 01-sft-lora-huggingface/                       # Lab 1: SFT y LoRA con Hugging Face
 │   ├── README.md
 │   └── 01_sft_lora_huggingface.ipynb
