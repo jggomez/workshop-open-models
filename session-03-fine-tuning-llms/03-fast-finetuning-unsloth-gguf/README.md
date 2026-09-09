@@ -1,6 +1,6 @@
 # Hands-on Lab 3 (Sesion 3): Fine-Tuning Ultra-Rapido con Unsloth y Exportacion a GGUF para Ollama
 
-Este laboratorio practico avanzado aborda tecnicas de alto rendimiento en el post-entrenamiento de Modelos de Lenguaje Abiertos empleando **Unsloth**, aceleracion por hardware con **kernels manuales en OpenAI Triton**, salida estructurada en **formato JSON**, y exportacion directa a binario cuantizado **GGUF** con manifiesto **`Modelfile` para Ollama**, sirviendo como puente de integracion con la **Sesion 4 (Serving en Produccion)**.
+Este laboratorio practico avanzado aborda tecnicas de alto rendimiento en el post-entrenamiento de Modelos de Lenguaje Abiertos empleando **Unsloth**, aceleracion por hardware con **kernels manuales en OpenAI Triton**, salida estructurada en **formato JSON**, y exportacion directa a binario cuantizado **GGUF** con manifiesto **`Modelfile` para Ollama**, sirviendo como puente de integracion directo con la [Sesion 4 - Lab 1: Serving con Ollama y GCS FUSE](../../session-04-production-serving/01-ollama-cloudrun-gcsfuse/README.md).
 
 ---
 

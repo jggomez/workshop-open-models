@@ -81,6 +81,7 @@ gcloud run deploy vllm-gemma \
   --region="${REGION}" \
   --gpu=1 \
   --gpu-type=nvidia-l4 \
+  --no-gpu-zonal-redundancy \
   --cpu=4 \
   --memory=16Gi \
   --no-cpu-throttling \

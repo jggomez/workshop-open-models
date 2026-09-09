@@ -59,11 +59,11 @@ Los modelos de lenguaje expuestos publicamente son susceptibles a vectores de at
 **Model Armor** se integra a nivel de red utilizando una **Service Extension** en el External Application Load Balancer. Cada payload entrante y saliente es inspeccionado antes de llegar al contenedor de vLLM. Si se detecta una violacion, el Load Balancer bloquea la peticion de inmediato, protegiendo tanto la seguridad como el presupuesto computacional de la GPU.
 
 ### 2.5. Observabilidad Granular: Sidecar de Prometheus
-vLLM expone de forma nativa metricas detalladas en el endpoint interno `/metrics`. Para recolectarlas sin alterar la imagen de inferencia, se inyecta un contenedor sidecar (OpenTelemetry / Google Cloud Managed Service for Prometheus) que:
+vLLM expone de forma nativa metricas detalladas en el endpoint interno `/metrics`. Para recolectarlas sin alterar la imagen de inferencia, se inyecta un contenedor sidecar (`us-docker.pkg.dev/cloud-ops-agents-artifacts/cloud-run-gmp-sidecar/cloud-run-gmp-sidecar:1.2.0`) administrado mediante Google Cloud Managed Service for Prometheus (GMP) con la anotacion `run.googleapis.com/container-dependencies: '{"collector":["app"]}'`:
 - Mide el **Time To First Token (TTFT)**.
 - Mide los **Tokens Per Second (TPS)** reales.
 - Monitorea el porcentaje de ocupacion del KV-Cache.
-- Exporta metricas directamente a Google Cloud Monitoring para configurar alertas SRE.
+- Exporta metricas directamente a Google Cloud Monitoring para configurar alertas SRE y tableros operativos.
 
 ---
 
