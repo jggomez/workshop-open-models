@@ -41,8 +41,7 @@ El taller se divide en cuatro sesiones tematicas:
    - Modulo 4.1: Serving serverless y perimetral con Ollama y Cloud Storage FUSE en Cloud Run.
    - Modulo 4.2: Serving de alta concurrencia con vLLM, PagedAttention, GPU NVIDIA L4 y Model Armor.
    - Modulo 4.3: Ingestion y hosting administrado en la nube con Vertex AI Model Garden (MaaS vs Dedicated Endpoints).
-   - Hands-on Labs y Material Tecnico:
-     * **Playbook de Ingenieria:** [Playbook Tecnico: De Fine-Tuning a Serving en Produccion](./session-04-production-serving/playbook-tecnico-fine-tuning-lora-qlora-dpo.md).
+   - Hands-on Labs:
      * **Lab 1:** Inferencia local con Ollama (GGUF de Sesion 3) y despliegue a Cloud Run con Cloud Storage FUSE (`01-ollama-cloudrun-gcsfuse/`).
      * **Lab 2:** Serving empresarial con vLLM y Gemma en Cloud Run GPU, Model Armor y observabilidad (`02-vllm-gemma-cloudrun-production/`).
      * **Lab 3:** Despliegue de DeepSeek y Gemma con Vertex AI Model Garden (`03-vertex-ai-model-garden/`).

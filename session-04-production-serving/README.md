@@ -2,7 +2,7 @@
 
 Esta sesion esta orientada a la puesta en produccion, despliegue de alta concurrencia y arquitectura de serving en la nube para modelos de lenguaje y vision de codigo abierto, abarcando desde la inferencia perimetral y serverless con **Ollama** y **Google Cloud Run**, pasando por clusters de alto rendimiento con **vLLM**, hasta plataformas administradas con **Vertex AI Model Garden**.
 
-- **Documento Teorico y Playbook de Arquitectura:** [Playbook Tecnico: LoRA, QLoRA y DPO](./playbook-tecnico-fine-tuning-lora-qlora-dpo.md)
+- **Prerrequisito y Fundamentos de Post-Entrenamiento:** [Playbook Tecnico de Fine-Tuning y Alineacion (Sesion 3)](../session-03-fine-tuning-llms/playbook-tecnico-sesion-3.md)
 
 ---
 
@@ -42,7 +42,6 @@ Esta sesion esta orientada a la puesta en produccion, despliegue de alta concurr
 ```text
 session-04-production-serving/
 ├── README.md                                # Esta guia general de la sesion
-├── playbook-tecnico-fine-tuning-lora-qlora-dpo.md # Playbook tecnico: LoRA, QLoRA y DPO
 ├── 01-ollama-cloudrun-gcsfuse/              # Lab 1: Ollama Local y Despliegue en Cloud Run con GCS FUSE
 │   ├── README.md
 │   ├── Dockerfile

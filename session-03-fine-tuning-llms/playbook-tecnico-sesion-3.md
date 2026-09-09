@@ -1,15 +1,15 @@
-# Playbook Tecnico: Fine-Tuning de LLMs con LoRA, QLoRA y Direct Preference Optimization (DPO)
+# Playbook Tecnico: Fine-Tuning de LLMs con LoRA, QLoRA, DPO y Unsloth
 
-**Manual de Arquitectura, Fundamentos Matematicos, Optimizacion de Memoria y Protocolos de Implementacion**
+**Manual de Arquitectura, Fundamentos Matematicos, Optimizacion de Memoria, Aceleracion con Kernels Triton y Evaluacion Cuantitativa (Sesion 3)**
 
 - **Audiencia Objetivo:** Ingenieros de Machine Learning, Arquitectos de Soluciones de IA, Tech Leads y Cientificos de Datos.
-- **Ambito Tecnico:** Post-entrenamiento eficiente (PEFT), cuantizacion en punto flotante normal (NF4), alineacion directa de preferencias (DPO) y evaluacion cuantitativa.
+- **Ambito Tecnico:** Post-entrenamiento eficiente (PEFT), cuantizacion en punto flotante normal (NF4), alineacion directa de preferencias (DPO), optimizacion a nivel de GPU con Unsloth (OpenAI Triton), exportacion a GGUF y protocolos de evaluacion cuantitativa rigurosa (LLM-as-a-Judge).
 
 ---
 
 ## 1. Resumen Ejecutivo y Marco Conceptual
 
-El ciclo de vida moderno de los Modelos de Lenguaje Grande (LLMs) comprende tres fases sucesivas y diferenciadas:
+El ciclo de vida de los Modelos de Lenguaje Grande (LLMs) comprende tres fases sucesivas y diferenciadas:
 
 1. **Pre-entrenamiento autosupervisado masivo:** El modelo procesa billones de tokens optimizando una funcion de perdida de entropia cruzada autorregresiva. Aunque esta etapa otorga fluidez linguistica y un vasto conocimiento factico enciclopedico, el modelo preentrenado resultante actua unicamente como un completador de secuencias probabilisticas, incapaz de seguir instrucciones complejas de forma confiable, segura o estructurada.
 2. **Ajuste Fino Supervisado (SFT - Supervised Fine-Tuning):** Adapta el motor probabilistico mediante pares de instruccion-respuesta de alta calidad, habilitando capacidades conversacionales y especializacion en dominios tecnicos o corporativos.
@@ -29,7 +29,12 @@ flowchart LR
     subgraph Alineacion["Alineacion de Preferencias"]
         InstructLM --> PrefData["Dataset de Preferencias (Chosen vs Rejected)"]
         PrefData --> DPO["Optimizacion Directa (DPO)"]
-        DPO --> AlignedLM["Modelo Alineado para Produccion"]
+        DPO --> AlignedLM["Modelo Alineado"]
+    end
+
+    subgraph Serving["Empaquetado y Serving (Sesion 4)"]
+        AlignedLM --> UnslothGGUF["Unsloth & GGUF (Quantization)"]
+        UnslothGGUF --> ProdServing["Inferencia en Ollama, vLLM y Cloud Run"]
     end
 ```
 
@@ -37,11 +42,13 @@ flowchart LR
 
 El ajuste fino completo (Full Fine-Tuning) de arquitecturas modernas (desde 7B hasta 70B de parametros) impone una barrera computacional prohibitiva: actualizar todos los pesos exige almacenar no solo los tensores del modelo en memoria de video (VRAM), sino tambien los gradientes y los estados del optimizador (como AdamW), demandando cientos de gigabytes de memoria dedicada de alto costo.
 
-Este playbook documenta la triada metodologica que resuelve este desafio de escala:
+Este playbook documenta la metodologia integral que resuelve este desafio de escala:
 
 - **LoRA (Low-Rank Adaptation):** Congela los pesos preentrenados e inyecta pares de matrices de bajo rango entrenables, reduciendo los parametros modificados en mas de un 99%.
 - **QLoRA (Quantized Low-Rank Adaptation):** Cuantiza el modelo base congelado a 4 bits mediante NormalFloat4 (NF4) y doble cuantizacion, habilitando el ajuste fino de modelos de alta escala en GPUs comerciales sin degradacion de precision.
 - **DPO (Direct Preference Optimization):** Suprime la complejidad, inestabilidad y sobrecarga de hardware del Reinforcement Learning from Human Feedback (RLHF) tradicional con PPO, derivando una funcion de perdida directa en forma cerrada sobre pares de respuestas preferidas y rechazadas.
+- **Unsloth & Kernels Triton:** Acelera el entrenamiento reescribiendo los pasos de backpropagation en kernels personalizados de Triton, reduciendo hasta un 70% de consumo de VRAM y acelerando la computacion de 2x a 5x.
+- **Evaluacion Cuantitativa Dual:** Combina metricas intrinsecas de recompensa probabilistica (Reward Accuracy) con benchmarks ciegos por pares utilizando LLM-as-a-Judge con mitigacion de sesgo posicional.
 
 ---
 
@@ -96,19 +103,19 @@ flowchart TD
 
 Propuesto formalmente por Hu et al. (2021), LoRA (*Low-Rank Adaptation*) parte de una hipotesis fundamental: las actualizaciones de peso que sufre una red neuronal durante la adaptacion a una tarea especifica poseen una dimension intrinseca baja (*low intrinsic dimension*). Por ende, la matriz de modificacion acumulada puede parametrizarse con precision como el producto de dos matrices compactas de bajo rango.
 
-Dada una capa densa preentrenada con matriz de pesos congelada $W_0 \in \mathbb{R}^{d 	imes k}$, ante una activacion de entrada $x$, la transformacion lineal convencional computa:
+Dada una capa densa preentrenada con matriz de pesos congelada $W_0 \in \mathbb{R}^{d \times k}$, ante una activacion de entrada $x$, la transformacion lineal convencional computa:
 
 $$h = W_0 x$$
 
-En lugar de actualizar directamente los coeficientes de $W_0$ (lo que requeriria calcular y almacenar gradientes sobre $d 	imes k$ elementos), LoRA modela el delta acumulado $\Delta W$ mediante una factorizacion de rango $r$, donde $r \ll \min(d, k)$:
+En lugar de actualizar directamente los coeficientes de $W_0$ (lo que requeriria calcular y almacenar gradientes sobre $d \times k$ elementos), LoRA modela el delta acumulado $\Delta W$ mediante una factorizacion de rango $r$, donde $r \ll \min(d, k)$:
 
-$$h = W_0 x + \Delta W x = W_0 x + rac{lpha}{r} (B \cdot A) x$$
+$$h = W_0 x + \Delta W x = W_0 x + \frac{\alpha}{r} (B \cdot A) x$$
 
 Donde:
-- **Matriz $A \in \mathbb{R}^{r 	imes k}$:** Inicializada con una distribucion normal aleatoria $\mathcal{N}(0, \sigma^2)$.
-- **Matriz $B \in \mathbb{R}^{d 	imes r}$:** Inicializada estrictamente en ceros ($0$). Esto garantiza que en el primer paso de entrenamiento $\Delta W = B \cdot A = 0$, por lo que el comportamiento del modelo inicia de forma exacta en el punto de preentrenamiento sin saltos bruscos.
+- **Matriz $A \in \mathbb{R}^{r \times k}$:** Inicializada con una distribucion normal aleatoria $\mathcal{N}(0, \sigma^2)$.
+- **Matriz $B \in \mathbb{R}^{d \times r}$:** Inicializada estrictamente en ceros ($0$). Esto garantiza que en el primer paso de entrenamiento $\Delta W = B \cdot A = 0$, por lo que el comportamiento del modelo inicia de forma exacta en el punto de preentrenamiento sin saltos bruscos.
 - **Parametro de rango ($r$):** Dimension interna del cuello de botella (tipicamente configurado entre 8 y 64).
-- **Factor de escala ($rac{lpha}{r}$):** Constante normalizadora que calibra la magnitud de la actualizacion adaptativa frente a la rama original congelada.
+- **Factor de escala ($\frac{\alpha}{r}$):** Constante normalizadora que calibra la magnitud de la actualizacion adaptativa frente a la rama original congelada.
 
 ```mermaid
 flowchart LR
@@ -126,33 +133,33 @@ flowchart LR
 Consideremos una matriz lineal tipica dentro del bloque de atencion de un modelo moderno (como LLaMA-8B), donde la dimension oculta es $d = 4096$ y la proyeccion lineal proyecta a $k = 4096$:
 
 1. **Parametros en Full Fine-Tuning:**
-   $$	ext{Parametros} = d 	imes k = 4096 	imes 4096 = 16,777,216 	ext{ parametros por capa}$$
+   $$\text{Parametros} = d \times k = 4096 \times 4096 = 16,777,216 \text{ parametros por capa}$$
 
 2. **Parametros con LoRA (configurando rango $r = 8$):**
-   - Matriz $A$: $r 	imes k = 8 	imes 4096 = 32,768 	ext{ parametros}$
-   - Matriz $B$: $d 	imes r = 4096 	imes 8 = 32,768 	ext{ parametros}$
+   - Matriz $A$: $r \times k = 8 \times 4096 = 32,768 \text{ parametros}$
+   - Matriz $B$: $d \times r = 4096 \times 8 = 32,768 \text{ parametros}$
    - Total de parametros entrenables en LoRA:
-     $$32,768 + 32,768 = 65,536 	ext{ parametros}$$
+     $$32,768 + 32,768 = 65,536 \text{ parametros}$$
 
 3. **Calculo del porcentaje de parametros entrenables:**
-   $$	ext{Porcentaje Entrenable} = \left( rac{65,536}{16,777,216} ight) 	imes 100 = 0.3906\%$$
+   $$\text{Porcentaje Entrenable} = \left( \frac{65,536}{16,777,216} \right) \times 100 = 0.3906\%$$
 
 Este resultado demuestra que se actualiza unicamente el 0.39% de los parametros de la capa. En consecuencia, se reduce en un **99.61%** la memoria requerida para gradientes y estados del optimizador en dicho modulo.
 
-### 3.3 El Rol de `lora_alpha` y el Factor de Escala ($rac{lpha}{r}$)
+### 3.3 El Rol de `lora_alpha` y el Factor de Escala ($\frac{\alpha}{r}$)
 
-El factor normalizador $rac{lpha}{r}$ cumple dos roles criticos de estabilidad hiperparametrica:
+El factor normalizador $\frac{\alpha}{r}$ cumple dos roles criticos de estabilidad hiperparametrica:
 
 1. **Invarianza ante la variacion de rango:** Cuando se ajusta $r$ (por ejemplo, incrementando de 8 a 64 para capturar mayor expresividad), la norma de Frobenius del producto matricial $B \cdot A$ escala proporcionalmente con $r$. Al normalizar dividiendo entre $r$, la escala efectiva de las actualizaciones permanece constante, eliminando la necesidad de reajustar exhaustivamente la tasa de aprendizaje (*learning rate*) en cada experimento.
-2. **Control de intensidad de aprendizaje:** $lpha$ funciona como una ganancia sobre el gradiente efectivo. Fijar $lpha = 2r$ (por ejemplo, $r=8, lpha=16$ o $r=16, lpha=32$) es una convencion canonica recomendada por la comunidad cientifica para otorgar suficiente ponderacion a la adaptacion sin inducir inestabilidades numericas.
+2. **Control de intensidad de aprendizaje:** $\alpha$ funciona como una ganancia sobre el gradiente efectivo. Fijar $\alpha = 2r$ (por ejemplo, $r=8, \alpha=16$ o $r=16, \alpha=32$) es una convencion canonica recomendada por la comunidad cientifica para otorgar suficiente ponderacion a la adaptacion sin inducir inestabilidades numericas.
 
 ### 3.4 Cero Latencia en Inferencia: Fusion de Pesos (Weight Merging)
 
 A diferencia de los esquemas tradicionales de adaptacion secuencial (que introducen capas intermedias anadidas y penalizan la latencia en inferencia), LoRA permite la integracion analitica de pesos al culminar el entrenamiento:
 
-$$W_{	ext{final}} = W_0 + rac{lpha}{r} (B \cdot A)$$
+$$W_{\text{final}} = W_0 + \frac{\alpha}{r} (B \cdot A)$$
 
-La matriz resultante $W_{	ext{final}}$ posee exactamente las mismas dimensiones $(d 	imes k)$ que la matriz base original. Para el despliegue en produccion se sirve una matriz unificada sin ramas en paralelo, garantizando latencia identica a la del modelo base original.
+La matriz resultante $W_{\text{final}}$ posee exactamente las mismas dimensiones $(d \times k)$ que la matriz base original. Para el despliegue en produccion se sirve una matriz unificada sin ramas en paralelo, garantizando latencia identica a la del modelo base original.
 
 ---
 
@@ -167,7 +174,7 @@ Aunque LoRA abate la memoria requerida por gradientes y optimizadores, el modelo
 1. **Tipo de Dato NormalFloat4 (NF4):**
    Los pesos de las redes neuronales preentrenadas no presentan una distribucion uniforme, sino que siguen una distribucion normal centrada en cero: $W \sim \mathcal{N}(0, \sigma^2)$. Los formatos tradicionales de cuantizacion entera uniforme (INT4) dividen el espacio en intervalos equidistantes, desperdiciando capacidad de representacion en las colas. NF4 construye 16 cuantiles discretos de tal modo que cada bin posea exactamente la misma probabilidad de ocurrencia bajo una curva gaussiana estandar, minimizando el error cuadratico medio (MSE) de cuantizacion sin requerir bits adicionales.
 2. **Doble Cuantizacion (Double Quantization - DQ):**
-   Para transformar los pesos a NF4 se dividen en bloques de tamano $B_1 = 64$, calculando una constante de escala $c_1$ por bloque. Almacenar estas constantes en FP32 agregaria $rac{32}{64} = 0.5$ bits por parametro. QLoRA aplica una segunda cuantizacion a 8 bits (FP8) sobre las propias constantes de escala en bloques de $B_2 = 256$, reduciendo la sobrecarga de escala de 0.5 bits/parametro a solo **0.127 bits por parametro**, lo que representa un ahorro de ~3 GB en un modelo de 65B.
+   Para transformar los pesos a NF4 se dividen en bloques de tamano $B_1 = 64$, calculando una constante de escala $c_1$ por bloque. Almacenar estas constantes en FP32 agregaria $\frac{32}{64} = 0.5$ bits por parametro. QLoRA aplica una segunda cuantizacion a 8 bits (FP8) sobre las propias constantes de escala en bloques de $B_2 = 256$, reduciendo la sobrecarga de escala de 0.5 bits/parametro a solo **0.127 bits por parametro**, lo que representa un ahorro de ~3 GB en un modelo de 65B.
 3. **Optimizadores Paginados (Paged Optimizers):**
    Aprovecha la memoria unificada de CUDA (*NVIDIA Unified Memory*) para trasladar de forma asincrona los estados del optimizador inactivos entre la VRAM de la GPU y la memoria RAM del sistema operativo (host CPU) durante fases de alta demanda, previniendo fallos por falta de memoria (*Out of Memory - OOM*).
 
@@ -215,10 +222,10 @@ flowchart TD
 El proceso tradicional de alineacion mediante Aprendizaje por Refuerzo con Retroalimentacion Humana (RLHF) consta de dos fases complejas posteriores al SFT:
 
 1. **Entrenamiento del Modelo de Recompensa (Reward Model):** Se entrena un modelo discriminador $r_\psi(x, y)$ que asigna una puntuacion escalar a una respuesta $y$ dado un contexto $x$, optimizado mediante clasificaciones binarias bajo el modelo de eleccion de Bradley-Terry.
-2. **Optimizacion por Refuerzo de la Politica (PPO):** El modelo de lenguaje $\pi_	heta$ genera secuencias completas en tiempo real, el modelo de recompensa $r_\psi$ las evalua, y el algoritmo PPO (*Proximal Policy Optimization*) ajusta los pesos de $\pi_	heta$ incorporando una penalizacion de divergencia KL frente a una copia inmutable del modelo base $\pi_{	ext{ref}}$.
+2. **Optimizacion por Refuerzo de la Politica (PPO):** El modelo de lenguaje $\pi_\theta$ genera secuencias completas en tiempo real, el modelo de recompensa $r_\psi$ las evalua, y el algoritmo PPO (*Proximal Policy Optimization*) ajusta los pesos de $\pi_\theta$ incorporando una penalizacion de divergencia KL frente a una copia inmutable del modelo base $\pi_{\text{ref}}$.
 
 Este esquema presenta severas restricciones de ingenieria:
-- **Sobrecarga Extrema de Memoria:** Obliga a mantener simultaneamente 4 modelos en VRAM: la politica activa ($\pi_	heta$), el modelo de referencia congelado ($\pi_{	ext{ref}}$), el modelo de recompensa ($r_\psi$) y el estimador de valor critico ($V_\phi$).
+- **Sobrecarga Extrema de Memoria:** Obliga a mantener simultaneamente 4 modelos en VRAM: la politica activa ($\pi_\theta$), el modelo de referencia congelado ($\pi_{\text{ref}}$), el modelo de recompensa ($r_\psi$) y el estimador de valor critico ($V_\phi$).
 - **Inestabilidad Algoritmica:** PPO exhibe alta sensibilidad a hiperparametros, colapsos de gradiente y fenomenos de optimizacion espuria (*reward hacking*), donde el generador detecta patrones sintacticos artificiales que maximizan el score sin aportar calidad real.
 
 ### 5.2 La Derivacion Analitica de DPO (Rafailov et al., 2023)
@@ -227,27 +234,27 @@ Direct Preference Optimization demuestra analiticamente que es posible prescindi
 
 El objetivo clasico de maximizacion con penalizacion por divergencia de Kullback-Leibler se formula como:
 
-$$\max_{\pi} \mathbb{E}_{x \sim \mathcal{D}, y \sim \pi} [r(x, y)] - eta \, \mathbb{D}_{	ext{KL}}(\pi(y|x) \parallel \pi_{	ext{ref}}(y|x))$$
+$$\max_{\pi} \mathbb{E}_{x \sim \mathcal{D}, y \sim \pi} [r(x, y)] - \beta \, \mathbb{D}_{\text{KL}}(\pi(y|x) \parallel \pi_{\text{ref}}(y|x))$$
 
 La solucion teorica exacta y en forma cerrada a este problema de optimizacion es:
 
-$$\pi^*(y|x) = rac{1}{Z(x)} \pi_{	ext{ref}}(y|x) \exp\left( rac{1}{eta} r(x, y) ight)$$
+$$\pi^*(y|x) = \frac{1}{Z(x)} \pi_{\text{ref}}(y|x) \exp\left( \frac{1}{\beta} r(x, y) \right)$$
 
-Donde $Z(x) = \sum_y \pi_{	ext{ref}}(y|x) \exp\left( rac{1}{eta} r(x, y) ight)$ es la funcion de particion normalizadora. Despejando formalmente la funcion de recompensa $r(x, y)$:
+Donde $Z(x) = \sum_y \pi_{\text{ref}}(y|x) \exp\left( \frac{1}{\beta} r(x, y) \right)$ es la funcion de particion normalizadora. Despejando formalmente la funcion de recompensa $r(x, y)$:
 
-$$r(x, y) = eta \log rac{\pi^*(y|x)}{\pi_{	ext{ref}}(y|x)} + eta \log Z(x)$$
+$$r(x, y) = \beta \log \frac{\pi^*(y|x)}{\pi_{\text{ref}}(y|x)} + \beta \log Z(x)$$
 
 Bajo el modelo de preferencias probabilisticas de Bradley-Terry (1952), la probabilidad de que una respuesta preferida $y_w$ gane sobre una respuesta rechazada $y_l$ depende unicamente de la diferencia escalar de sus recompensas:
 
 $$P(y_w \succ y_l \mid x) = \sigma(r(x, y_w) - r(x, y_l))$$
 
-Al sustituir la expresion analitica de $r(x, y)$ en la resta, el termino dependiente de la funcion de particion $eta \log Z(x)$ es identico en ambos factores y **se cancela de manera exacta**:
+Al sustituir la expresion analitica de $r(x, y)$ en la resta, el termino dependiente de la funcion de particion $\beta \log Z(x)$ es identico en ambos factores y **se cancela de manera exacta**:
 
-$$r(x, y_w) - r(x, y_l) = eta \log rac{\pi_	heta(y_w|x)}{\pi_{	ext{ref}}(y_w|x)} - eta \log rac{\pi_	heta(y_l|x)}{\pi_{	ext{ref}}(y_l|x)}$$
+$$r(x, y_w) - r(x, y_l) = \beta \log \frac{\pi_\theta(y_w|x)}{\pi_{\text{ref}}(y_w|x)} - \beta \log \frac{\pi_\theta(y_l|x)}{\pi_{\text{ref}}(y_l|x)}$$
 
 Minimizando la log-verosimilitud negativa del conjunto de preferencias, se obtiene la funcion de perdida cerrada de DPO:
 
-$$\mathcal{L}_{	ext{DPO}}(	heta; \pi_{	ext{ref}}) = - \mathbb{E}_{(x, y_w, y_l) \sim \mathcal{D}} \left[ \log \sigma \left( eta \log rac{\pi_	heta(y_w|x)}{\pi_{	ext{ref}}(y_w|x)} - eta \log rac{\pi_	heta(y_l|x)}{\pi_{	ext{ref}}(y_l|x)} ight) ight]$$
+$$\mathcal{L}_{\text{DPO}}(\theta; \pi_{\text{ref}}) = - \mathbb{E}_{(x, y_w, y_l) \sim \mathcal{D}} \left[ \log \sigma \left( \beta \log \frac{\pi_\theta(y_w|x)}{\pi_{\text{ref}}(y_w|x)} - \beta \log \frac{\pi_\theta(y_l|x)}{\pi_{\text{ref}}(y_l|x)} \right) \right]$$
 
 ```mermaid
 flowchart TD
@@ -275,33 +282,28 @@ flowchart TD
 
 ### 5.3 Dinamica del Gradiente y Mecanica de Penalizacion
 
-Al derivar la funcion de perdida $\mathcal{L}_{	ext{DPO}}$ respecto a los parametros $	heta$:
+Al derivar la funcion de perdida $\mathcal{L}_{\text{DPO}}$ respecto a los parametros $\theta$:
 
-$$
-abla_	heta \mathcal{L}_{	ext{DPO}}(	heta) = - eta \, \sigma\left( \hat{r}_	heta(x, y_l) - \hat{r}_	heta(x, y_w) ight) \left[ 
-abla_	heta \log \pi_	heta(y_w|x) - 
-abla_	heta \log \pi_	heta(y_l|x) ight]$$
+$$\nabla_\theta \mathcal{L}_{\text{DPO}}(\theta) = - \beta \, \sigma\left( \hat{r}_\theta(x, y_l) - \hat{r}_\theta(x, y_w) \right) \left[ \nabla_\theta \log \pi_\theta(y_w|x) - \nabla_\theta \log \pi_\theta(y_l|x) \right]$$
 
-Donde $\hat{r}_	heta(x, y) = eta \log rac{\pi_	heta(y|x)}{\pi_{	ext{ref}}(y|x)}$. Esta formulacion revela dos comportamientos fundamentales:
+Donde $\hat{r}_\theta(x, y) = \beta \log \frac{\pi_\theta(y|x)}{\pi_{\text{ref}}(y|x)}$. Esta formulacion revela dos comportamientos fundamentales:
 
-1. **Ponderacion de error adaptativa:** El coeficiente $\sigma(\hat{r}_	heta(x, y_l) - \hat{r}_	heta(x, y_w))$ escala el gradiente. Si el modelo califica incorrectamente la respuesta rechazada $y_l$ por encima de la preferida $y_w$, el argumento es positivo y el factor sigmoide se aproxima a 1, generando una correccion de gradiente muy potente. Si el modelo ya clasifica correctamente $y_w$ con alto margen, el factor tiende a 0, evitando perturbar los pesos innecesariamente.
-2. **Direccionalidad del ajuste:** El gradiente eleva simultaneamente la probabilidad de los tokens de la respuesta ganadora $y_w$ ($
-abla \log \pi(y_w|x)$ positivo) y disminuye activamente la probabilidad de emision de los tokens de la respuesta perdedora $y_l$ ($-
-abla \log \pi(y_l|x)$).
+1. **Ponderacion de error adaptativa:** El coeficiente $\sigma(\hat{r}_\theta(x, y_l) - \hat{r}_\theta(x, y_w))$ escala el gradiente. Si el modelo califica incorrectamente la respuesta rechazada $y_l$ por encima de la preferida $y_w$, el argumento es positivo y el factor sigmoide se aproxima a 1, generando una correccion de gradiente muy potente. Si el modelo ya clasifica correctamente $y_w$ con alto margen, el factor tiende a 0, evitando perturbar los pesos innecesariamente.
+2. **Direccionalidad del ajuste:** El gradiente eleva simultaneamente la probabilidad de los tokens de la respuesta ganadora $y_w$ ($\nabla \log \pi(y_w|x)$ positivo) y disminuye activamente la probabilidad de emision de los tokens de la respuesta perdedora $y_l$ ($-\nabla \log \pi(y_l|x)$).
 
 ### 5.4 Sinergia Operativa: DPO + QLoRA
 
-DPO requiere evaluar dos politicas: la red activa ($\pi_	heta$) y el modelo de referencia congelado ($\pi_{	ext{ref}}$). Si se implementara con modelos independientes, seria necesario cargar dos copias completas en memoria. La combinacion de DPO con adaptadores PEFT resuelve este conflicto de forma elegante:
+DPO requiere evaluar dos politicas: la red activa ($\pi_\theta$) y el modelo de referencia congelado ($\pi_{\text{ref}}$). Si se implementara con modelos independientes, seria necesario cargar dos copias completas en memoria. La combinacion de DPO con adaptadores PEFT resuelve este conflicto de forma elegante:
 
-- Se instancia un unico modelo base cuantizado en 4 bits (NF4). Este tensor base permanece inmutable y representa a $\pi_{	ext{ref}}$ cuando los adaptadores estan desactivados.
-- Se inyectan adaptadores LoRA en 16 bits que representan a la politica activa $\pi_	heta$.
-- Frameworks como Hugging Face TRL ejecutan el paso forward desactivando temporalmente los adaptadores (`with model.disable_adapter():`) para calcular $\pi_{	ext{ref}}(y|x)$ y luego los reactivan para computar $\pi_	heta(y|x)$, operando sobre una unica GPU sin requerir hardware adicional.
+- Se instancia un unico modelo base cuantizado en 4 bits (NF4). Este tensor base permanece inmutable y representa a $\pi_{\text{ref}}$ cuando los adaptadores estan desactivados.
+- Se inyectan adaptadores LoRA en 16 bits que representan a la politica activa $\pi_\theta$.
+- Frameworks como Hugging Face TRL ejecutan el paso forward desactivando temporalmente los adaptadores (`with model.disable_adapter():`) para calcular $\pi_{\text{ref}}(y|x)$ y luego los reactivan para computar $\pi_\theta(y|x)$, operando sobre una unica GPU sin requerir hardware adicional.
 
 ---
 
-## 6. Curaduria del Dataset de Preferencias
+## 6. Curaduria de Datasets y Prevencion de Sesgos
 
-### 6.1 Estructura Ternaria (Prompt, Chosen, Rejected)
+### 6.1 Dataset de Preferencias Ternario (Prompt, Chosen, Rejected)
 
 Un dataset valido para DPO se estructura obligatoriamente en tuplas ternarias:
 
@@ -317,11 +319,55 @@ Los algoritmos basados en optimizacion de preferencias sufren un riesgo bien doc
 
 **Regla de Curaduria:** Es imperativo incluir de forma balanceada pares de entrenamiento donde la respuesta preferida sea significativamente mas concisa, puntual y directa que la respuesta rechazada.
 
+### 6.3 Plantillas de Chat y Enmascaramiento de Respuesta (Response Masking)
+
+En tareas de SFT conversacional, el modelo procesa secuencias compuestas por turnos de usuario y asistente estructuradas mediante plantillas Jinja2 (`apply_chat_template`). Para evitar que el modelo intente predecir o memorizar las preguntas del usuario, se aplica enmascaramiento de respuesta (*response masking*) con `DataCollatorForCompletionOnlyLM`:
+
+- Todos los tokens correspondientes al sistema y al usuario reciben una etiqueta de perdida de `-100`, indicando a la funcion de perdida de PyTorch ignorarlos.
+- El gradiente se computa **unicamente sobre los tokens de la respuesta del asistente**, maximizando la densidad de senal util por paso de entrenamiento.
+
 ---
 
-## 7. Pipeline de Entrenamiento en Produccion (TRL & PEFT)
+## 7. Post-Entrenamiento Acelerado con Unsloth y Exportacion a GGUF
 
-El siguiente script implementa el flujo de entrenamiento integral combinando cuantizacion NF4 de 4 bits, adaptadores LoRA y optimizacion DPO mediante librerias estandar del ecosistema de codigo abierto:
+### 7.1 Optimizacion a Nivel de Kernel con OpenAI Triton
+
+Unsloth redefine el rendimiento del fine-tuning reescribiendo los cuellos de botella computacionales de PyTorch y Hugging Face directamente en **OpenAI Triton**:
+
+1. **Backpropagation Analitica Manual:** En lugar de depender de la cinta de autograd de PyTorch (que retiene grafos y activaciones intermedias masivas en VRAM), Unsloth deriva las formulas analiticas de gradientes para capas de atencion, activaciones GeLU/SwiGLU y RoPE, ejecutandolas en un unico kernel fusionado.
+2. **Cross-Entropy Fusionada:** La computacion convencional de Cross-Entropy proyecta los estados ocultos hacia el vocabulario completo ($V \approx 32,000 \text{ a } 128,000$), creando tensores gigantescos en VRAM. El kernel Triton de Unsloth calcula la perdida y el gradiente de forma simultanea por bloques, reduciendo el consumo de memoria en la capa de salida en mas de un 80%.
+3. **Impacto Cuantitativo:** Se logra una reduccion de hasta el **70% de VRAM** y una aceleracion de **2x a 5x** en la velocidad de entrenamiento respecto al stack estandar de PEFT/TRL.
+
+```mermaid
+flowchart TD
+    subgraph PyTorch_Standard["Stack Estandar (PyTorch + Hugging Face)"]
+        H_State["Estados Ocultos (B, L, H)"] --> ProjVocab["Proyeccion a Vocabulario Gigante (B, L, V) [Alto VRAM]"]
+        ProjVocab --> Softmax["Softmax sobre Vocabulario"]
+        Softmax --> LossStd["Cross Entropy Loss"]
+        LossStd --> Autograd["Autograd almacena todo el grafo en VRAM"]
+    end
+
+    subgraph Unsloth_Triton["Aceleracion Unsloth (OpenAI Triton Kernels)"]
+        H_State2["Estados Ocultos"] --> FusedKernel["Kernel Triton Fusionado: Cross-Entropy por Bloques"]
+        FusedKernel --> LossFast["Calculo de Perdida y Gradientes en Registros"]
+        LossFast --> NoGraph["Sin retencion de activaciones masivas (Ahorro 70% VRAM)"]
+    end
+```
+
+### 7.2 Exportacion a Formato GGUF y Puente a Produccion
+
+El post-entrenamiento en la Sesion 3 se articula de forma directa con la puesta en produccion en la Sesion 4 mediante la exportacion al formato binario **GGUF** (*GPT-Generated Unified Format*):
+
+- **Tipos de Cuantizacion Recomendados:**
+  - `q4_k_m`: Formato estandar balanceado de 4 bits con cuantizacion mixta por bloques (k-quants). Ofrece la mejor relacion entre reduccion de tamano (~4.5 GB para 8B) y preservacion de perplejidad.
+  - `q8_0`: Cuantizacion casi sin perdida a 8 bits, recomendada para tareas de alta precision logica o extraccion estructurada de JSON.
+- **Creacion de Modelfiles para Ollama:** El binario GGUF resultante se acompana de un archivo `Modelfile` que codifica la plantilla de chat, parametros de decodificacion (`temperature`, `top_p`) y el prompt de sistema, habilitando serving local inmediato o despliegue en Google Cloud Run.
+
+---
+
+## 8. Pipelines de Entrenamiento en Produccion (TRL & Unsloth)
+
+### 8.1 Pipeline QLoRA con DPOTrainer (Hugging Face TRL & PEFT)
 
 ```python
 import torch
@@ -406,20 +452,55 @@ trainer.train()
 trainer.save_model("./modelo_final_dpo_qlora")
 ```
 
+### 8.2 Pipeline de Fine-Tuning y Exportacion GGUF con Unsloth
+
+```python
+from unsloth import FastLanguageModel
+import torch
+
+# 1. Carga acelerada con kernels Triton precompilados
+max_seq_length = 2048
+model, tokenizer = FastLanguageModel.from_pretrained(
+    model_name="unsloth/gemma-2-9b-bnb-4bit",
+    max_seq_length=max_seq_length,
+    load_in_4bit=True,
+    dtype=None  # Deteccion automatica (Float16 o Bfloat16)
+)
+
+# 2. Inyeccion de LoRA optimizado en todas las matrices lineales
+model = FastLanguageModel.get_peft_model(
+    model,
+    r=16,
+    target_modules=["q_proj", "k_proj", "v_proj", "o_proj",
+                    "gate_proj", "up_proj", "down_proj"],
+    lora_alpha=32,
+    lora_dropout=0.0,  # Unsloth optimiza a dropout 0
+    bias="none",
+    use_gradient_checkpointing="unsloth"  # Ahorro extremo de VRAM
+)
+
+# 3. Exportacion directa a GGUF (q4_k_m) para Ollama / vLLM
+model.save_pretrained_gguf(
+    "modelo_gemma_finetuned_gguf",
+    tokenizer,
+    quantization_method="q4_k_m"
+)
+```
+
 ---
 
-## 8. Metricas de Evaluacion y Diagnostico Cuantitativo
+## 9. Metricas de Evaluacion y Diagnostico Cuantitativo
 
-### 8.1 Metricas Intrinsecas Durante el Entrenamiento
+### 9.1 Metricas Intrinsecas Durante el Entrenamiento
 
 Durante el entrenamiento con DPO se deben monitorear y registrar las siguientes cuatro metricas numericas primarias:
 
 - `rewards/margins`: Diferencia escalar promedio entre la recompensa implicita de la respuesta elegida y la rechazada: $\hat{r}(x, y_w) - \hat{r}(x, y_l)$. Debe mostrar una pendiente estrictamente positiva a lo largo de las epocas y converger en un valor positivo estable.
 - `rewards/accuracies`: Proporcion de pares evaluados donde el modelo asigna formalmente mayor valor a $y_w$ que a $y_l$. Un valor entre **0.70 y 0.85** refleja una alineacion robusta. Si el valor fluctua en torno a **0.50**, el modelo no esta aprendiendo a discriminar y clasifica al azar.
 - `rewards/chosen` vs. `rewards/rejected`: El valor promedio asignado a las respuestas elegidas debe aumentar o mantenerse controlado, mientras que el valor asignado a las respuestas rechazadas debe declinar sostenidamente.
-- `loss`: Perdida sigmoide de DPO. Un descenso suave evidencia convergencia adecuada. Oscilaciones caoticas son sintoma de una tasa de aprendizaje excesiva o de un $eta$ demasiado pequeno.
+- `loss`: Perdida sigmoide de DPO. Un descenso suave evidencia convergencia adecuada. Oscilaciones caoticas son sintoma de una tasa de aprendizaje excesiva o de un $\beta$ demasiado pequeno.
 
-### 8.2 Protocolo de Evaluacion Cuantitativa: LLM-as-a-Judge
+### 9.2 Protocolo de Evaluacion Cuantitativa: LLM-as-a-Judge
 
 Para validar cuantitativamente el modelo resultante frente al modelo base sin depender de inspecciones cualitativas subjetivas, se implementa el estandar industrial de evaluacion por pares ciegos (*blind pairwise benchmark*) con un modelo juez de frontera (como GPT-4o o Claude 3.5 Sonnet):
 
@@ -448,18 +529,32 @@ flowchart TD
     Tie --> Agg
 ```
 
-1. **Generacion en Conjunto de Prueba Reservado:** Se alimentan 500 prompts ineditos tanto al modelo base ($\pi_{	ext{ref}}$) como al modelo adaptado con DPO ($\pi_	heta$) fijando parametros de muestreo deterministas (`temperature=0.7`, `top_p=0.9`).
+1. **Generacion en Conjunto de Prueba Reservado:** Se alimentan 500 prompts ineditos tanto al modelo base ($\pi_{\text{ref}}$) como al modelo adaptado con DPO ($\pi_\theta$) fijando parametros de muestreo deterministas (`temperature=0.7`, `top_p=0.9`).
 2. **Mitigacion de Sesgo de Posicion (*Position Bias*):** Los evaluadores LLM presentan una marcada tendencia empirica a favorecer la primera opcion presentada en el prompt. Para neutralizar este sesgo, cada comparacion se evalua dos veces intercambiando el orden: `[A: Base, B: DPO]` y `[A: DPO, B: Base]`. Si el juez cambia su eleccion dependiendo unicamente de la posicion, el caso se categoriza como Empate (*Tie*).
 3. **Calculo del Win Rate Cuantitativo:** Se computa la proporcion de victorias netas segun la formula estandarizada:
-   $$	ext{Win Rate} = rac{	ext{Victorias}_{	ext{DPO}} + 0.5 	imes 	ext{Empates}}{	ext{Total de Comparaciones}}$$
+   $$\text{Win Rate} = \frac{\text{Victorias}_{\text{DPO}} + 0.5 \times \text{Empates}}{\text{Total de Comparaciones}}$$
    Un **Win Rate superior al 60%** sobre prompts no vistos certifica una mejora estadisticamente significativa de la alineacion del modelo.
 
 ---
 
-## 9. Referencias Bibliograficas Canonicas
+## 10. Referencias Bibliograficas y Recursos Canonicos
+
+### Articulos de Investigacion Cientifica (Papers)
 
 - **Hu, E. J., Shen, Y., Wallis, P., Allen-Zhu, Z., Li, Y., Wang, S., Wang, L., & Chen, W. (2021).** *LoRA: Low-Rank Adaptation of Large Language Models.* International Conference on Learning Representations (ICLR 2022). [arXiv:2106.09685](https://arxiv.org/abs/2106.09685)
 - **Dettmers, T., Pagnoni, A., Holtzman, A., & Zettlemoyer, L. (2023).** *QLoRA: Efficient Finetuning of Quantized LLMs.* Advances in Neural Information Processing Systems (NeurIPS 2023). [arXiv:2305.14314](https://arxiv.org/abs/2305.14314)
 - **Rafailov, R., Sharma, A., Mitchell, E., Ermon, S., Manning, C. D., & Finn, C. (2023).** *Direct Preference Optimization: Your Language Model is Secretly a Reward Model.* Advances in Neural Information Processing Systems (NeurIPS 2023). [arXiv:2305.18290](https://arxiv.org/abs/2305.18290)
 - **Bradley, R. A., & Terry, M. E. (1952).** *Rank analysis of incomplete block designs: I. The method of paired comparisons.* Biometrika, 39(3/4), 324-345.
 - **Ouyang, L., Wu, J., Jiang, X., et al. (2022).** *Training language models to follow instructions with human feedback.* Advances in Neural Information Processing Systems (NeurIPS 2022), 35, 27730-27744.
+- **Zheng, L., Chiang, W. L., Sheng, Y., et al. (2023).** *Judging LLM-as-a-Judge with MT-Bench and Chatbot Arena.* Advances in Neural Information Processing Systems (NeurIPS 2023). [arXiv:2306.05685](https://arxiv.org/abs/2306.05685)
+- **Li, X., Zhang, T., Dubois, Y., Taori, R., et al. (2023).** *AlpacaEval: An Automatic Evaluator of Instruction-following Models.* GitHub Repository. [https://github.com/tatsu-lab/alpaca_eval](https://github.com/tatsu-lab/alpaca_eval)
+- **Tillet, P., Kung, H. T., & Cox, D. (2019).** *Triton: An Intermediate Language and Compiler for Tiled Neural Network Computations.* Proceedings of the 3rd ACM SIGPLAN International Workshop on Libraries, Languages, and Compilers for Array Programming. [ACM Digital Library](https://doi.org/10.1145/3315454.3329953)
+
+### Documentacion Oficial y Ecosistema Open Source
+
+- **Hugging Face TRL (Transformer Reinforcement Learning):** [https://huggingface.co/docs/trl/](https://huggingface.co/docs/trl/)
+- **Hugging Face PEFT (Parameter-Efficient Fine-Tuning):** [https://huggingface.co/docs/peft/](https://huggingface.co/docs/peft/)
+- **Unsloth AI Documentation:** [https://docs.unsloth.ai/](https://docs.unsloth.ai/)
+- **Guia Oficial del Formato GGUF en Hugging Face Hub:** [https://huggingface.co/docs/hub/gguf](https://huggingface.co/docs/hub/gguf)
+- **Ecosistema Ollama (Modelfile & Serving):** [https://ollama.com/](https://ollama.com/)
+- **vLLM (PagedAttention & Serving):** [https://docs.vllm.ai/](https://docs.vllm.ai/)
